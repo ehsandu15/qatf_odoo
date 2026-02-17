@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ============================================================ -->
+    <!-- PROJECT COST VIEWS -->
+    <!-- ============================================================ -->
+    
+    <!-- Cost Tree View -->
+    <record id="farm_project_cost_view_tree" model="ir.ui.view">
+        <field name="name">farm.project.cost.view.tree</field>
+        <field name="model">farm.project.cost</field>
+        <field name="arch" type="xml">
+            <tree string="سجل التكاليف" decoration-muted="state == 'cancelled'" decoration-success="state == 'posted'">
+                <field name="date" string="التاريخ"/>
+                <field name="name" string="المرجع"/>
+                <field name="project_id" string="المشروع"/>
+                <field name="farm_id" string="المزرعة"/>
+                <field name="state" string="الحالة" widget="badge" decoration-info="state == 'draft'" decoration-success="state == 'posted'" decoration-danger="state == 'cancelled'"/>
+                <field name="display_cost_type" string="النوع"/>
+                <field name="source_display" string="المصدر"/>
+                <field name="direct_cost_account_id" string="حساب مباشر" optional="show"/>
+                <field name="indirect_cost_account_id" string="حساب غير مباشر" optional="show"/>
+                <field name="payment_account_id" string="من حساب" optional="show"/>
+                <field name="amount" string="المبلغ" sum="الإجمالي"/>
+                <field name="house_count" string="عدد البيوت"/>
+                <field name="move_id" string="القيد" optional="show"/>
+                <field name="ledger_description" string="وصف القيد" optional="hide"/>
+                <field name="description" string="ملاحظات" optional="hide"/>
+                <field name="currency_id" column_invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Cost Form View -->
+    <record id="farm_project_cost_view_form" model="ir.ui.view">
+        <field name="name">farm.project.cost.view.form</field>
+        <field name="model">farm.project.cost</field>
+        <field name="arch" type="xml">
+            <form string="تكلفة المشروع">
+                <header>
+                    <button name="action_post" type="object" string="ترحيل" class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_cancel" type="object" string="إلغاء" invisible="state == 'cancelled'" confirm="هل أنت متأكد من إلغاء هذه التكلفة؟ سيتم إلغاء القيود المحاسبية المرتبطة."/>
+                    <button name="action_draft" type="object" string="إعادة للمسودة" invisible="state != 'cancelled'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,posted"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_allocations" type="object" class="oe_stat_button" icon="fa-pie-chart">
+                            <field name="house_count" widget="statinfo" string="البيوت"/>
+                        </button>
+                        <button name="action_view_move" type="object" class="oe_stat_button" icon="fa-file-text-o" invisible="not move_id">
+                            <span class="o_stat_text">القيد المحاسبي</span>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="ملغى" bg_color="bg-danger" invisible="state != 'cancelled'"/>
+                    <widget name="web_ribbon" title="مرحّل" bg_color="bg-success" invisible="state != 'posted'"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="بيانات التكلفة">
+                            <field name="project_id" string="المشروع (قيد التنفيذ)" readonly="state != 'draft'" 
+                                   domain="[('status', '=', 'in_progress')]"/>
+                            <field name="farm_id" string="المزرعة" readonly="1"/>
+                            <field name="date" string="التاريخ" readonly="state != 'draft'"/>
+                            <field name="amount" string="المبلغ" readonly="state != 'draft'"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="move_id" string="القيد المحاسبي" invisible="not move_id" readonly="1"/>
+                            <field name="order_id" string="طلب المنتجات" readonly="1" invisible="not order_id"/>
+                        </group>
+                        <group string="نوع التكلفة">
+                            <field name="cost_type" widget="radio" readonly="state != 'draft' or harvest_entry_id"/>
+                        </group>
+                    </group>
+                    
+                    <!-- Direct Cost Fields -->
+                    <div class="alert alert-info" role="alert" invisible="cost_type != 'direct'">
+                        <strong>مصادر التكلفة المباشرة:</strong>
+                        اختر القطاعات أو الوحدات أو البيوت. سيتم توزيع التكلفة حسب المساحة.
+                    </div>
+                    <!-- Hidden fields for available sources -->
+                    <field name="available_sector_ids" invisible="1"/>
+                    <field name="available_unit_ids" invisible="1"/>
+                    <field name="available_house_ids" invisible="1"/>
+                    
+                    <group invisible="cost_type != 'direct'">
+                        <group string="اختر المصادر (من المشروع)">
+                            <field name="source_sector_ids" 
+                                   string="القطاعات"
+                                   widget="many2many_tags"
+                                   readonly="state != 'draft'"
+                                   domain="[('id', 'in', available_sector_ids)]"/>
+                            <field name="source_unit_ids" 
+                                   string="الوحدات"
+                                   widget="many2many_tags"
+                                   readonly="state != 'draft'"
+                                   domain="[('id', 'in', available_unit_ids)]"/>
+                            <field name="source_house_ids" 
+                                   string="البيوت"
+                                   widget="many2many_tags"
+                                   readonly="state != 'draft'"
+                                   domain="[('id', 'in', available_house_ids)]"/>
+                        </group>
+                        <group string="حساب التكلفة">
+                            <field name="direct_cost_account_id" 
+                                   string="حساب التكلفة المباشرة"
+                                   required="cost_type == 'direct'" 
+                                   readonly="state != 'draft'" 
+                                   options="{'no_create': True}"/>
+                        </group>
+                    </group>
+                    
+                    <!-- Indirect Cost Fields -->
+                    <group string="التكلفة غير المباشرة" invisible="cost_type != 'indirect'">
+                        <group>
+                            <field name="indirect_cost_account_id" 
+                                   string="حساب التكلفة غير المباشرة"
+                                   required="cost_type == 'indirect'" 
+                                   readonly="state != 'draft'" 
+                                   options="{'no_create': True}"/>
+                        </group>
+                    </group>
+                    
+                    <!-- Harvest Cost Fields (readonly - auto-created from harvests) -->
+                    <group string="تكلفة الحصاد" invisible="not harvest_entry_id">
+                        <div class="alert alert-success" role="alert">
+                            <i class="fa fa-leaf"/> هذه تكلفة مباشرة تم إنشاؤها تلقائياً من سجل الحصاد.
+                        </div>
+                        <group>
+                            <field name="harvest_entry_id" string="سجل الحصاد" readonly="1"/>
+                        </group>
+                    </group>
+                    
+                    <!-- Payment Account (not required for order-linked or harvest costs) -->
+                    <group string="حساب الدفع" invisible="order_id or harvest_entry_id">
+                        <group>
+                            <field name="payment_account_id" string="حساب الدفع (من)" 
+                                   readonly="state != 'draft'" 
+                                   required="not order_id and not harvest_entry_id"
+                                   options="{'no_create': True}"/>
+                        </group>
+                    </group>
+                    
+                    <!-- Auto-generated Ledger Description -->
+                    <div invisible="not ledger_description" class="mb-3">
+                        <separator string="وصف القيد المحاسبي"/>
+                        <field name="ledger_description" readonly="1" nolabel="1" class="text-primary"/>
+                    </div>
+                    
+                    <separator string="ملاحظات"/>
+                    <field name="description" nolabel="1" placeholder="وصف إضافي للتكلفة..." readonly="state != 'draft'"/>
+                    
+                    <notebook>
+                        <page string="توزيع التكاليف" name="allocations">
+                            <field name="allocation_line_ids" readonly="1">
+                                <tree string="توزيع التكاليف على البيوت">
+                                    <field name="house_id" string="البيت"/>
+                                    <field name="sector_id" string="القطاع" optional="show"/>
+                                    <field name="unit_id" string="الوحدة" optional="show"/>
+                                    <field name="house_area" string="المساحة (م²)"/>
+                                    <field name="percentage" string="النسبة %"/>
+                                    <field name="allocated_amount" string="المبلغ الموزع" sum="الإجمالي"/>
+                                    <field name="cost_per_sqm" string="تكلفة/م²" optional="show"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                </tree>
+                            </field>
+                            <group class="oe_subtotal_footer">
+                                <field name="allocated_amount" string="إجمالي الموزع" class="oe_subtotal_footer_separator"/>
+                            </group>
+                        </page>
+                        <page string="القيود المحاسبية" name="order_entries" invisible="not order_id">
+                            <div class="alert alert-info" role="alert">
+                                <i class="fa fa-info-circle"/> هذه القيود المحاسبية مرتبطة بطلب المنتجات ولم يتم إنشاء قيد منفصل لهذه التكلفة.
+                            </div>
+                            <field name="order_move_ids" readonly="1">
+                                <tree string="القيود المحاسبية">
+                                    <field name="name" string="رقم القيد"/>
+                                    <field name="ref" string="المرجع"/>
+                                    <field name="date" string="التاريخ"/>
+                                    <field name="state" string="الحالة" widget="badge" 
+                                           decoration-success="state == 'posted'"
+                                           decoration-info="state == 'draft'"/>
+                                    <field name="amount_total" string="الإجمالي"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Cost Search View -->
+    <record id="farm_project_cost_view_search" model="ir.ui.view">
+        <field name="name">farm.project.cost.view.search</field>
+        <field name="model">farm.project.cost</field>
+        <field name="arch" type="xml">
+            <search string="البحث في التكاليف">
+                <field name="name"/>
+                <field name="project_id"/>
+                <field name="farm_id"/>
+                <field name="direct_cost_account_id"/>
+                <field name="indirect_cost_account_id"/>
+                <field name="payment_account_id"/>
+                <field name="ledger_description"/>
+                <separator/>
+                <filter name="filter_draft" string="مسودة" domain="[('state', '=', 'draft')]"/>
+                <filter name="filter_posted" string="مرحّل" domain="[('state', '=', 'posted')]"/>
+                <filter name="filter_cancelled" string="ملغى" domain="[('state', '=', 'cancelled')]"/>
+                <separator/>
+                <filter name="filter_direct" string="مباشر" domain="[('cost_type', '=', 'direct')]"/>
+                <filter name="filter_indirect" string="غير مباشر" domain="[('cost_type', '=', 'indirect')]"/>
+                <separator/>
+                <filter name="filter_today" string="اليوم" domain="[('date', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="filter_this_month" string="هذا الشهر" domain="[('date', '&gt;=', (context_today() - relativedelta(day=1)).strftime('%Y-%m-%d')), ('date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="filter_this_year" string="هذا العام" domain="[('date', '&gt;=', (context_today() - relativedelta(day=1, month=1)).strftime('%Y-%m-%d'))]"/>
+                <separator/>
+                <group expand="0" string="تجميع حسب">
+                    <filter name="group_state" string="الحالة" context="{'group_by': 'state'}"/>
+                    <filter name="group_cost_type" string="نوع التكلفة" context="{'group_by': 'cost_type'}"/>
+                    <filter name="group_project" string="المشروع" context="{'group_by': 'project_id'}"/>
+                    <filter name="group_farm" string="المزرعة" context="{'group_by': 'farm_id'}"/>
+                    <filter name="group_date" string="التاريخ" context="{'group_by': 'date:month'}"/>
+                    <filter name="group_direct_account" string="حساب مباشر" context="{'group_by': 'direct_cost_account_id'}"/>
+                    <filter name="group_indirect_account" string="حساب غير مباشر" context="{'group_by': 'indirect_cost_account_id'}"/>
+                    <filter name="group_payment_account" string="حساب الدفع" context="{'group_by': 'payment_account_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Cost Pivot View -->
+    <record id="farm_project_cost_view_pivot" model="ir.ui.view">
+        <field name="name">farm.project.cost.view.pivot</field>
+        <field name="model">farm.project.cost</field>
+        <field name="arch" type="xml">
+            <pivot string="تحليل التكاليف">
+                <field name="farm_id" type="row"/>
+                <field name="project_id" type="row"/>
+                <field name="cost_type" type="col"/>
+                <field name="amount" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Cost Graph View -->
+    <record id="farm_project_cost_view_graph" model="ir.ui.view">
+        <field name="name">farm.project.cost.view.graph</field>
+        <field name="model">farm.project.cost</field>
+        <field name="arch" type="xml">
+            <graph string="تحليل التكاليف" type="bar">
+                <field name="project_id"/>
+                <field name="cost_type"/>
+                <field name="amount" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Cost Action -->
+    <record id="farm_project_cost_action" model="ir.actions.act_window">
+        <field name="name">التكاليف</field>
+        <field name="res_model">farm.project.cost</field>
+        <field name="view_mode">tree,form,pivot,graph</field>
+        <field name="search_view_id" ref="farm_project_cost_view_search"/>
+        <field name="context">{'search_default_filter_draft': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                أنشئ تكلفة جديدة
+            </p>
+            <p>
+                سجل التكاليف المباشرة وغير المباشرة على المشاريع وسيتم توزيعها تلقائياً على البيوت حسب المساحة.
+            </p>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- COST ALLOCATION VIEWS -->
+    <!-- ============================================================ -->
+    
+    <!-- Allocation Tree View -->
+    <record id="farm_cost_allocation_view_tree" model="ir.ui.view">
+        <field name="name">farm.cost.allocation.view.tree</field>
+        <field name="model">farm.cost.allocation</field>
+        <field name="arch" type="xml">
+            <tree string="توزيع التكاليف" decoration-muted="cost_state == 'cancelled'">
+                <field name="cost_date"/>
+                <field name="cost_id"/>
+                <field name="project_id"/>
+                <field name="farm_id"/>
+                <field name="cost_type" widget="badge" decoration-info="cost_type == 'direct'" decoration-warning="cost_type == 'indirect'"/>
+                <field name="sector_id"/>
+                <field name="unit_id"/>
+                <field name="house_id"/>
+                <field name="house_area" string="المساحة (م²)"/>
+                <field name="percentage" string="النسبة (%)"/>
+                <field name="allocated_amount" sum="المجموع"/>
+                <field name="cost_per_sqm" string="التكلفة/م²"/>
+                <field name="cost_state" widget="badge" decoration-info="cost_state == 'draft'" decoration-success="cost_state == 'posted'" decoration-danger="cost_state == 'cancelled'"/>
+                <field name="currency_id" column_invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Allocation Search View -->
+    <record id="farm_cost_allocation_view_search" model="ir.ui.view">
+        <field name="name">farm.cost.allocation.view.search</field>
+        <field name="model">farm.cost.allocation</field>
+        <field name="arch" type="xml">
+            <search string="البحث في التوزيعات">
+                <field name="cost_id"/>
+                <field name="project_id"/>
+                <field name="farm_id"/>
+                <field name="sector_id"/>
+                <field name="unit_id"/>
+                <field name="house_id"/>
+                <separator/>
+                <filter name="filter_posted" string="مرحّل" domain="[('cost_state', '=', 'posted')]"/>
+                <filter name="filter_draft" string="مسودة" domain="[('cost_state', '=', 'draft')]"/>
+                <filter name="filter_cancelled" string="ملغى" domain="[('cost_state', '=', 'cancelled')]"/>
+                <separator/>
+                <filter name="filter_direct" string="مباشر" domain="[('cost_type', '=', 'direct')]"/>
+                <filter name="filter_indirect" string="غير مباشر" domain="[('cost_type', '=', 'indirect')]"/>
+                <separator/>
+                <group expand="0" string="تجميع حسب">
+                    <filter name="group_cost_type" string="نوع التكلفة" context="{'group_by': 'cost_type'}"/>
+                    <filter name="group_farm" string="المزرعة" context="{'group_by': 'farm_id'}"/>
+                    <filter name="group_project" string="المشروع" context="{'group_by': 'project_id'}"/>
+                    <filter name="group_sector" string="القطاع" context="{'group_by': 'sector_id'}"/>
+                    <filter name="group_unit" string="الوحدة" context="{'group_by': 'unit_id'}"/>
+                    <filter name="group_house" string="البيت" context="{'group_by': 'house_id'}"/>
+                    <filter name="group_date" string="التاريخ" context="{'group_by': 'cost_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Allocation Pivot View -->
+    <record id="farm_cost_allocation_view_pivot" model="ir.ui.view">
+        <field name="name">farm.cost.allocation.view.pivot</field>
+        <field name="model">farm.cost.allocation</field>
+        <field name="arch" type="xml">
+            <pivot string="تحليل توزيع التكاليف">
+                <field name="farm_id" type="row"/>
+                <field name="sector_id" type="row"/>
+                <field name="unit_id" type="row"/>
+                <field name="house_id" type="row"/>
+                <field name="cost_type" type="col"/>
+                <field name="allocated_amount" type="measure"/>
+                <field name="house_area" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Allocation Graph View -->
+    <record id="farm_cost_allocation_view_graph" model="ir.ui.view">
+        <field name="name">farm.cost.allocation.view.graph</field>
+        <field name="model">farm.cost.allocation</field>
+        <field name="arch" type="xml">
+            <graph string="توزيع التكاليف حسب البيت" type="bar">
+                <field name="house_id"/>
+                <field name="cost_type"/>
+                <field name="allocated_amount" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Allocation Action -->
+    <record id="farm_cost_allocation_action" model="ir.actions.act_window">
+        <field name="name">سجل توزيع التكاليف</field>
+        <field name="res_model">farm.cost.allocation</field>
+        <field name="view_mode">tree,pivot,graph</field>
+        <field name="search_view_id" ref="farm_cost_allocation_view_search"/>
+        <field name="context">{'search_default_filter_posted': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                لا توجد توزيعات تكاليف
+            </p>
+            <p>
+                سيتم إنشاء التوزيعات تلقائياً عند إضافة التكاليف على المشاريع.
+            </p>
+        </field>
+    </record>
+
+    <!-- Cost Ledger Action -->
+    <record id="farm_cost_ledger_action" model="ir.actions.act_window">
+        <field name="name">سجل التكاليف</field>
+        <field name="res_model">farm.project.cost</field>
+        <field name="view_mode">tree,form,pivot,graph</field>
+        <field name="domain">[('state', '=', 'posted')]</field>
+        <field name="context">{'search_default_filter_posted': 1}</field>
+    </record>
+
+</odoo>

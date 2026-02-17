@@ -1,0 +1,32 @@
+# Track only custom_addons and config
+/*
+!/custom_addons/
+!/.gitignore
+!/odoo.conf
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.egg
+
+# Backups
+*.bak
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+.cursor/
+
+# Logs
+*.log
+
+# Data
+filestore/
+sessions/

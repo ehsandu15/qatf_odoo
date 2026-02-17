@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Default configuration for produce product code regex -->
+        <function model="ir.config_parameter" name="set_param">
+            <value>farm_management.produce_code_regex</value>
+            <value>^70</value>
+        </function>
+        
+        <!-- Sequences -->
+        <record id="seq_farm_project" model="ir.sequence">
+            <field name="name">تسلسل مشاريع المزرعة</field>
+            <field name="code">farm.project</field>
+            <field name="prefix">PROJ-</field>
+            <field name="padding">5</field>
+        </record>
+        
+        <record id="seq_farm_project_cost" model="ir.sequence">
+            <field name="name">تسلسل تكاليف المزرعة</field>
+            <field name="code">farm.project.cost</field>
+            <field name="prefix">COST-</field>
+            <field name="padding">5</field>
+        </record>
+        
+        <record id="seq_farm_harvest_entry" model="ir.sequence">
+            <field name="name">تسلسل الحصاد</field>
+            <field name="code">farm.harvest.entry</field>
+            <field name="prefix">HARV-</field>
+            <field name="padding">5</field>
+        </record>
+        
+        <record id="seq_farm_product_order" model="ir.sequence">
+            <field name="name">تسلسل طلبات المنتجات</field>
+            <field name="code">farm.product.order</field>
+            <field name="prefix">ORD-</field>
+            <field name="padding">5</field>
+        </record>
+    </data>
+</odoo>
+

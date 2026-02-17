@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        <!-- Farm Warehouses / Inventory Types -->
+        
+        <!-- مستودع البذور و التقاوى - Seeds Warehouse (Code: 10) -->
+        <record id="farm_warehouse_seeds" model="stock.warehouse">
+            <field name="name">مستودع البذور والتقاوي</field>
+            <field name="code">WH10</field>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        
+        <!-- مستودع الاسمدة - Fertilizers Warehouse (Code: 20) -->
+        <record id="farm_warehouse_fertilizers" model="stock.warehouse">
+            <field name="name">مستودع الاسمدة</field>
+            <field name="code">WH20</field>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        
+        <!-- مستودع المبيدات - Pesticides Warehouse (Code: 30) -->
+        <record id="farm_warehouse_pesticides" model="stock.warehouse">
+            <field name="name">مستودع المبيدات</field>
+            <field name="code">WH30</field>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        
+        <!-- مستودع المستلزمات الزراعية - Agricultural Supplies Warehouse (Code: 40) -->
+        <record id="farm_warehouse_agri_supplies" model="stock.warehouse">
+            <field name="name">مستودع المستلزمات الزراعية</field>
+            <field name="code">WH40</field>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        
+        <!-- مستودع مواد التغليف - Packaging Materials Warehouse (Code: 50) -->
+        <record id="farm_warehouse_packaging" model="stock.warehouse">
+            <field name="name">مستودع مواد التغليف</field>
+            <field name="code">WH50</field>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        
+        <!-- مستودع قطع الغيار و الصيانه - Spare Parts & Maintenance Warehouse (Code: 60) -->
+        <record id="farm_warehouse_spare_parts" model="stock.warehouse">
+            <field name="name">مستودع قطع الغيار والصيانة</field>
+            <field name="code">WH60</field>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        
+        <!-- مستودع الانتاج التام - Finished Products Warehouse (Code: 70) -->
+        <record id="farm_warehouse_finished" model="stock.warehouse">
+            <field name="name">مستودع الانتاج التام</field>
+            <field name="code">WH70</field>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        
+    </data>
+</odoo>
+
+
+
+
+
+

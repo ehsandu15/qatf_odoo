@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ============================================================ -->
+    <!-- COST ANALYSIS REPORT VIEWS -->
+    <!-- ============================================================ -->
+    
+    <!-- Cost Analysis by Farm/Project Report -->
+    <record id="farm_cost_report_view_pivot" model="ir.ui.view">
+        <field name="name">farm.cost.report.view.pivot</field>
+        <field name="model">farm.cost.allocation</field>
+        <field name="arch" type="xml">
+            <pivot string="تحليل التكاليف حسب المزرعة والمشروع">
+                <field name="farm_id" type="row"/>
+                <field name="project_id" type="row"/>
+                <field name="cost_type" type="col"/>
+                <field name="allocated_amount" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Cost Analysis by Sector/Unit/House Report -->
+    <record id="farm_cost_hierarchy_report_view_pivot" model="ir.ui.view">
+        <field name="name">farm.cost.hierarchy.report.view.pivot</field>
+        <field name="model">farm.cost.allocation</field>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <pivot string="تحليل التكاليف حسب الهيكل">
+                <field name="sector_id" type="row"/>
+                <field name="unit_id" type="row"/>
+                <field name="house_id" type="row"/>
+                <field name="cost_type" type="col"/>
+                <field name="allocated_amount" type="measure"/>
+                <field name="house_area" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Cost per Square Meter Analysis -->
+    <record id="farm_cost_sqm_report_view_pivot" model="ir.ui.view">
+        <field name="name">farm.cost.sqm.report.view.pivot</field>
+        <field name="model">farm.cost.allocation</field>
+        <field name="priority">30</field>
+        <field name="arch" type="xml">
+            <pivot string="تحليل التكلفة لكل متر مربع">
+                <field name="project_id" type="row"/>
+                <field name="house_id" type="row"/>
+                <field name="cost_date" interval="month" type="col"/>
+                <field name="allocated_amount" type="measure"/>
+                <field name="house_area" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Cost Trend Graph -->
+    <record id="farm_cost_trend_view_graph" model="ir.ui.view">
+        <field name="name">farm.cost.trend.view.graph</field>
+        <field name="model">farm.cost.allocation</field>
+        <field name="priority">10</field>
+        <field name="arch" type="xml">
+            <graph string="اتجاه التكاليف" type="line">
+                <field name="cost_date" interval="month"/>
+                <field name="allocated_amount" type="measure"/>
+                <field name="cost_type" type="col"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Cost by House Bar Chart -->
+    <record id="farm_cost_house_view_graph" model="ir.ui.view">
+        <field name="name">farm.cost.house.view.graph</field>
+        <field name="model">farm.cost.allocation</field>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <graph string="التكاليف حسب البيت" type="bar" stacked="1">
+                <field name="house_id"/>
+                <field name="allocated_amount" type="measure"/>
+                <field name="cost_type" type="col"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Cost Analysis Action -->
+    <record id="farm_cost_analysis_action" model="ir.actions.act_window">
+        <field name="name">تحليل التكاليف</field>
+        <field name="res_model">farm.cost.allocation</field>
+        <field name="view_mode">pivot,graph,tree</field>
+        <field name="domain">[('cost_state', '=', 'posted')]</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'pivot', 'view_id': ref('farm_cost_report_view_pivot')}),
+            (0, 0, {'view_mode': 'graph', 'view_id': ref('farm_cost_trend_view_graph')}),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('farm_cost_allocation_view_tree')})]"/>
+        <field name="search_view_id" ref="farm_cost_allocation_view_search"/>
+    </record>
+
+    <!-- Cost per Area Report Action -->
+    <record id="farm_cost_per_area_action" model="ir.actions.act_window">
+        <field name="name">التكلفة لكل متر مربع</field>
+        <field name="res_model">farm.cost.allocation</field>
+        <field name="view_mode">pivot,graph,tree</field>
+        <field name="domain">[('cost_state', '=', 'posted')]</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'pivot', 'view_id': ref('farm_cost_sqm_report_view_pivot')}),
+            (0, 0, {'view_mode': 'graph', 'view_id': ref('farm_cost_house_view_graph')}),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('farm_cost_allocation_view_tree')})]"/>
+        <field name="search_view_id" ref="farm_cost_allocation_view_search"/>
+    </record>
+
+    <!-- Hierarchy Drill-down Report Action -->
+    <record id="farm_cost_hierarchy_action" model="ir.actions.act_window">
+        <field name="name">تحليل التكاليف حسب الهيكل</field>
+        <field name="res_model">farm.cost.allocation</field>
+        <field name="view_mode">pivot,graph,tree</field>
+        <field name="domain">[('cost_state', '=', 'posted')]</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'pivot', 'view_id': ref('farm_cost_hierarchy_report_view_pivot')}),
+            (0, 0, {'view_mode': 'graph', 'view_id': ref('farm_cost_house_view_graph')}),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('farm_cost_allocation_view_tree')})]"/>
+        <field name="search_view_id" ref="farm_cost_allocation_view_search"/>
+    </record>
+
+</odoo>
+

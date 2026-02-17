@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ============================================================ -->
+    <!-- TEMPLATE DOWNLOAD WIZARD -->
+    <!-- ============================================================ -->
+    
+    <record id="template_download_wizard_view_form" model="ir.ui.view">
+        <field name="name">template.download.wizard.view.form</field>
+        <field name="model">template.download.wizard</field>
+        <field name="arch" type="xml">
+            <form string="تحميل قوالب الاستيراد">
+                <group>
+                    <group>
+                        <field name="template_type" widget="radio"/>
+                    </group>
+                </group>
+                <div class="alert alert-info mt-3" role="alert">
+                    <h4 class="alert-heading">📋 معلومات القوالب</h4>
+                    <hr/>
+                    <p><strong>القوالب الموحدة (مستحسن):</strong></p>
+                    <ul>
+                        <li><strong>قالب المزارع الموحد:</strong> يحتوي على المزرعة، القطاعات، الوحدات، والبيوت في ملف واحد</li>
+                        <li><strong>قالب المشاريع الموحد:</strong> يحتوي على المشروع وتخصيصات البيوت في ملف واحد</li>
+                    </ul>
+                    <hr/>
+                    <p><strong>القوالب المنفصلة:</strong> للاستيراد اليدوي عبر Odoo Import</p>
+                    <p class="text-muted mb-0">⚠️ ترتيب الاستيراد: مزارع ← قطاعات ← وحدات ← بيوت ← مشاريع ← تخصيصات</p>
+                </div>
+                <footer>
+                    <button name="action_download" type="object" string="تحميل القالب" class="btn-primary" icon="fa-download"/>
+                    <button string="إغلاق" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_template_download_wizard" model="ir.actions.act_window">
+        <field name="name">تحميل قوالب الاستيراد</field>
+        <field name="res_model">template.download.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>
+

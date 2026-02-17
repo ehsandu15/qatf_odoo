@@ -1,0 +1,655 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ============================================================ -->
+    <!-- FARM VIEWS -->
+    <!-- ============================================================ -->
+    
+    <!-- Farm Tree View -->
+    <record id="farm_farm_view_tree" model="ir.ui.view">
+        <field name="name">farm.farm.view.tree</field>
+        <field name="model">farm.farm</field>
+        <field name="arch" type="xml">
+            <tree string="المزارع">
+                <field name="code" optional="show"/>
+                <field name="name"/>
+                <field name="manager_id"/>
+                <field name="location"/>
+                <field name="sector_count"/>
+                <field name="unit_count"/>
+                <field name="house_count"/>
+                <field name="total_area" string="المساحة (م²)"/>
+                <field name="project_count"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Farm Kanban View -->
+    <record id="farm_farm_view_kanban" model="ir.ui.view">
+        <field name="name">farm.farm.view.kanban</field>
+        <field name="model">farm.farm</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile">
+                <field name="name"/>
+                <field name="manager_id"/>
+                <field name="sector_count"/>
+                <field name="house_count"/>
+                <field name="total_area"/>
+                <field name="project_count"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_global_click">
+                            <div class="oe_kanban_details">
+                                <div class="o_kanban_record_top mb-2">
+                                    <div class="o_kanban_record_headings">
+                                        <strong class="o_kanban_record_title">
+                                            <field name="name"/>
+                                        </strong>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_record_body">
+                                    <field name="manager_id" widget="many2one_avatar_user"/>
+                                    <div class="mt-2">
+                                        <span class="badge bg-primary me-1">
+                                            <field name="sector_count"/> قطاع
+                                        </span>
+                                        <span class="badge bg-success me-1">
+                                            <field name="house_count"/> بيت
+                                        </span>
+                                        <span class="badge bg-info">
+                                            <field name="total_area" digits="[16,0]"/> م²
+                                        </span>
+                                    </div>
+                                    <div class="mt-2">
+                                        <span class="badge bg-warning">
+                                            <field name="project_count"/> مشروع
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Farm Form View -->
+    <record id="farm_farm_view_form" model="ir.ui.view">
+        <field name="name">farm.farm.view.form</field>
+        <field name="model">farm.farm</field>
+        <field name="arch" type="xml">
+            <form string="المزرعة">
+                <header>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_sectors" type="object" class="oe_stat_button" icon="fa-th-large">
+                            <field name="sector_count" widget="statinfo" string="القطاعات"/>
+                        </button>
+                        <button name="action_view_units" type="object" class="oe_stat_button" icon="fa-cubes">
+                            <field name="unit_count" widget="statinfo" string="الوحدات"/>
+                        </button>
+                        <button name="action_view_houses" type="object" class="oe_stat_button" icon="fa-home">
+                            <field name="house_count" widget="statinfo" string="البيوت"/>
+                        </button>
+                        <button name="action_view_projects" type="object" class="oe_stat_button" icon="fa-tasks">
+                            <field name="project_count" widget="statinfo" string="المشاريع"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="اسم المزرعة"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="manager_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group>
+                            <field name="location"/>
+                            <field name="total_area" string="إجمالي المساحة (م²)"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="القطاعات" name="sectors">
+                            <field name="sector_ids">
+                                <tree editable="bottom">
+                                    <field name="code"/>
+                                    <field name="name"/>
+                                    <field name="unit_count"/>
+                                    <field name="house_count"/>
+                                    <field name="total_area" string="المساحة (م²)"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="الوصف" name="description">
+                            <field name="description" placeholder="وصف المزرعة..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Farm Search View -->
+    <record id="farm_farm_view_search" model="ir.ui.view">
+        <field name="name">farm.farm.view.search</field>
+        <field name="model">farm.farm</field>
+        <field name="arch" type="xml">
+            <search string="البحث في المزارع">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="manager_id"/>
+                <field name="location"/>
+                <filter name="filter_active" string="نشط" domain="[('active', '=', True)]"/>
+                <filter name="filter_archived" string="مؤرشف" domain="[('active', '=', False)]"/>
+                <separator/>
+                <group expand="0" string="تجميع حسب">
+                    <filter name="group_manager" string="المدير" context="{'group_by': 'manager_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Farm Action -->
+    <record id="farm_farm_action" model="ir.actions.act_window">
+        <field name="name">المزارع</field>
+        <field name="res_model">farm.farm</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="search_view_id" ref="farm_farm_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                أنشئ مزرعتك الأولى
+            </p>
+            <p>
+                المزارع هي المستوى الأعلى في هيكل إدارة المزارع.
+            </p>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- SECTOR VIEWS -->
+    <!-- ============================================================ -->
+    
+    <!-- Sector Tree View -->
+    <record id="farm_sector_view_tree" model="ir.ui.view">
+        <field name="name">farm.sector.view.tree</field>
+        <field name="model">farm.sector</field>
+        <field name="arch" type="xml">
+            <tree string="القطاعات">
+                <field name="code" optional="show"/>
+                <field name="name"/>
+                <field name="farm_id"/>
+                <field name="unit_count"/>
+                <field name="house_count"/>
+                <field name="total_area" string="المساحة (م²)"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Sector Kanban View -->
+    <record id="farm_sector_view_kanban" model="ir.ui.view">
+        <field name="name">farm.sector.view.kanban</field>
+        <field name="model">farm.sector</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile">
+                <field name="name"/>
+                <field name="farm_id"/>
+                <field name="unit_count"/>
+                <field name="house_count"/>
+                <field name="total_area"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_global_click">
+                            <div class="oe_kanban_details">
+                                <div class="o_kanban_record_top mb-2">
+                                    <div class="o_kanban_record_headings">
+                                        <strong class="o_kanban_record_title">
+                                            <field name="name"/>
+                                        </strong>
+                                        <span class="o_kanban_record_subtitle text-muted">
+                                            <field name="farm_id"/>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_record_body">
+                                    <div>
+                                        <span class="badge bg-primary me-1">
+                                            <field name="unit_count"/> وحدة
+                                        </span>
+                                        <span class="badge bg-success me-1">
+                                            <field name="house_count"/> بيت
+                                        </span>
+                                        <span class="badge bg-info">
+                                            <field name="total_area" digits="[16,0]"/> م²
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Sector Form View -->
+    <record id="farm_sector_view_form" model="ir.ui.view">
+        <field name="name">farm.sector.view.form</field>
+        <field name="model">farm.sector</field>
+        <field name="arch" type="xml">
+            <form string="القطاع">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_units" type="object" class="oe_stat_button" icon="fa-cubes">
+                            <field name="unit_count" widget="statinfo" string="الوحدات"/>
+                        </button>
+                        <button name="action_view_houses" type="object" class="oe_stat_button" icon="fa-home">
+                            <field name="house_count" widget="statinfo" string="البيوت"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="مؤرشف" bg_color="bg-danger" invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="اسم القطاع"/>
+                        </h1>
+                        <h4>
+                            <field name="full_name" class="text-muted"/>
+                        </h4>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="farm_id"/>
+                        </group>
+                        <group>
+                            <field name="total_area" string="إجمالي المساحة (م²)"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="الوحدات" name="units">
+                            <field name="unit_ids">
+                                <tree editable="bottom">
+                                    <field name="code"/>
+                                    <field name="name"/>
+                                    <field name="house_count"/>
+                                    <field name="total_area" string="المساحة (م²)"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="الوصف" name="description">
+                            <field name="description" placeholder="وصف القطاع..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Sector Search View -->
+    <record id="farm_sector_view_search" model="ir.ui.view">
+        <field name="name">farm.sector.view.search</field>
+        <field name="model">farm.sector</field>
+        <field name="arch" type="xml">
+            <search string="البحث في القطاعات">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="farm_id"/>
+                <filter name="filter_active" string="نشط" domain="[('active', '=', True)]"/>
+                <filter name="filter_archived" string="مؤرشف" domain="[('active', '=', False)]"/>
+                <separator/>
+                <group expand="0" string="تجميع حسب">
+                    <filter name="group_farm" string="المزرعة" context="{'group_by': 'farm_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Sector Action -->
+    <record id="farm_sector_action" model="ir.actions.act_window">
+        <field name="name">القطاعات</field>
+        <field name="res_model">farm.sector</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="search_view_id" ref="farm_sector_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                أنشئ قطاعك الأول
+            </p>
+            <p>
+                القطاعات تنتمي للمزارع وتحتوي على الوحدات.
+            </p>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- UNIT VIEWS -->
+    <!-- ============================================================ -->
+    
+    <!-- Unit Tree View -->
+    <record id="farm_unit_view_tree" model="ir.ui.view">
+        <field name="name">farm.unit.view.tree</field>
+        <field name="model">farm.unit</field>
+        <field name="arch" type="xml">
+            <tree string="الوحدات">
+                <field name="code" optional="show"/>
+                <field name="name"/>
+                <field name="sector_id"/>
+                <field name="farm_id"/>
+                <field name="house_count"/>
+                <field name="total_area" string="المساحة (م²)"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Unit Kanban View -->
+    <record id="farm_unit_view_kanban" model="ir.ui.view">
+        <field name="name">farm.unit.view.kanban</field>
+        <field name="model">farm.unit</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile">
+                <field name="name"/>
+                <field name="sector_id"/>
+                <field name="farm_id"/>
+                <field name="house_count"/>
+                <field name="total_area"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_global_click">
+                            <div class="oe_kanban_details">
+                                <div class="o_kanban_record_top mb-2">
+                                    <div class="o_kanban_record_headings">
+                                        <strong class="o_kanban_record_title">
+                                            <field name="name"/>
+                                        </strong>
+                                        <span class="o_kanban_record_subtitle text-muted">
+                                            <field name="sector_id"/> / <field name="farm_id"/>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_record_body">
+                                    <div>
+                                        <span class="badge bg-success me-1">
+                                            <field name="house_count"/> بيت
+                                        </span>
+                                        <span class="badge bg-info">
+                                            <field name="total_area" digits="[16,0]"/> م²
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Unit Form View -->
+    <record id="farm_unit_view_form" model="ir.ui.view">
+        <field name="name">farm.unit.view.form</field>
+        <field name="model">farm.unit</field>
+        <field name="arch" type="xml">
+            <form string="الوحدة">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_houses" type="object" class="oe_stat_button" icon="fa-home">
+                            <field name="house_count" widget="statinfo" string="البيوت"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="مؤرشف" bg_color="bg-danger" invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="اسم الوحدة"/>
+                        </h1>
+                        <h4>
+                            <field name="full_name" class="text-muted"/>
+                        </h4>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="sector_id"/>
+                            <field name="farm_id"/>
+                        </group>
+                        <group>
+                            <field name="total_area" string="إجمالي المساحة (م²)"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="البيوت" name="houses">
+                            <field name="house_ids">
+                                <tree editable="bottom">
+                                    <field name="code"/>
+                                    <field name="name"/>
+                                    <field name="area" string="المساحة (م²)"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="الوصف" name="description">
+                            <field name="description" placeholder="وصف الوحدة..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Unit Search View -->
+    <record id="farm_unit_view_search" model="ir.ui.view">
+        <field name="name">farm.unit.view.search</field>
+        <field name="model">farm.unit</field>
+        <field name="arch" type="xml">
+            <search string="البحث في الوحدات">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="sector_id"/>
+                <field name="farm_id"/>
+                <filter name="filter_active" string="نشط" domain="[('active', '=', True)]"/>
+                <filter name="filter_archived" string="مؤرشف" domain="[('active', '=', False)]"/>
+                <separator/>
+                <group expand="0" string="تجميع حسب">
+                    <filter name="group_farm" string="المزرعة" context="{'group_by': 'farm_id'}"/>
+                    <filter name="group_sector" string="القطاع" context="{'group_by': 'sector_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Unit Action -->
+    <record id="farm_unit_action" model="ir.actions.act_window">
+        <field name="name">الوحدات</field>
+        <field name="res_model">farm.unit</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="search_view_id" ref="farm_unit_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                أنشئ وحدتك الأولى
+            </p>
+            <p>
+                الوحدات تنتمي للقطاعات وتحتوي على البيوت.
+            </p>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- HOUSE VIEWS -->
+    <!-- ============================================================ -->
+    
+    <!-- House Tree View -->
+    <record id="farm_house_view_tree" model="ir.ui.view">
+        <field name="name">farm.house.view.tree</field>
+        <field name="model">farm.house</field>
+        <field name="arch" type="xml">
+            <tree string="البيوت">
+                <field name="code" optional="show"/>
+                <field name="name"/>
+                <field name="house_type" widget="badge" decoration-info="house_type == 'glass'" decoration-success="house_type == 'plastic'" decoration-warning="house_type == 'polycarbonate'"/>
+                <field name="unit_id"/>
+                <field name="sector_id"/>
+                <field name="farm_id"/>
+                <field name="area" string="المساحة (م²)"/>
+                <field name="analytic_account_id" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- House Kanban View -->
+    <record id="farm_house_view_kanban" model="ir.ui.view">
+        <field name="name">farm.house.view.kanban</field>
+        <field name="model">farm.house</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile">
+                <field name="name"/>
+                <field name="unit_id"/>
+                <field name="sector_id"/>
+                <field name="farm_id"/>
+                <field name="area"/>
+                <field name="house_type"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_global_click">
+                            <div class="oe_kanban_details">
+                                <div class="o_kanban_record_top mb-2">
+                                    <div class="o_kanban_record_headings">
+                                        <strong class="o_kanban_record_title">
+                                            <field name="name"/>
+                                        </strong>
+                                        <span class="o_kanban_record_subtitle text-muted">
+                                            <field name="unit_id"/>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_record_body">
+                                    <div>
+                                        <span t-attf-class="badge #{record.house_type.raw_value == 'glass' ? 'bg-info' : record.house_type.raw_value == 'polycarbonate' ? 'bg-warning' : 'bg-success'} me-1">
+                                            <field name="house_type"/>
+                                        </span>
+                                        <span class="badge bg-secondary">
+                                            <field name="area"/> م²
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- House Form View -->
+    <record id="farm_house_view_form" model="ir.ui.view">
+        <field name="name">farm.house.view.form</field>
+        <field name="model">farm.house</field>
+        <field name="arch" type="xml">
+            <form string="البيت">
+                <sheet>
+                    <widget name="web_ribbon" title="مؤرشف" bg_color="bg-danger" invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="اسم البيت"/>
+                        </h1>
+                        <h4>
+                            <field name="full_name" class="text-muted"/>
+                        </h4>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="unit_id"/>
+                            <field name="sector_id"/>
+                            <field name="farm_id"/>
+                        </group>
+                        <group>
+                            <field name="house_type" widget="radio"/>
+                            <field name="area" string="المساحة (م²)"/>
+                            <field name="analytic_account_id"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="الوصف" name="description">
+                            <field name="description" placeholder="وصف البيت..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- House Search View -->
+    <record id="farm_house_view_search" model="ir.ui.view">
+        <field name="name">farm.house.view.search</field>
+        <field name="model">farm.house</field>
+        <field name="arch" type="xml">
+            <search string="البحث في البيوت">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="unit_id"/>
+                <field name="sector_id"/>
+                <field name="farm_id"/>
+                <separator/>
+                <filter name="filter_glass" string="زجاجي" domain="[('house_type', '=', 'glass')]"/>
+                <filter name="filter_plastic" string="بلاستيكي" domain="[('house_type', '=', 'plastic')]"/>
+                <filter name="filter_polycarbonate" string="بوليكربونيت" domain="[('house_type', '=', 'polycarbonate')]"/>
+                <separator/>
+                <filter name="filter_active" string="نشط" domain="[('active', '=', True)]"/>
+                <filter name="filter_archived" string="مؤرشف" domain="[('active', '=', False)]"/>
+                <separator/>
+                <group expand="0" string="تجميع حسب">
+                    <filter name="group_farm" string="المزرعة" context="{'group_by': 'farm_id'}"/>
+                    <filter name="group_sector" string="القطاع" context="{'group_by': 'sector_id'}"/>
+                    <filter name="group_unit" string="الوحدة" context="{'group_by': 'unit_id'}"/>
+                    <filter name="group_house_type" string="نوع البيت" context="{'group_by': 'house_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- House Action -->
+    <record id="farm_house_action" model="ir.actions.act_window">
+        <field name="name">البيوت</field>
+        <field name="res_model">farm.house</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="search_view_id" ref="farm_house_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                أنشئ بيتك الأول
+            </p>
+            <p>
+                البيوت هي وحدات الإنتاج الفعلية داخل الوحدات.
+            </p>
+        </field>
+    </record>
+
+</odoo>
+

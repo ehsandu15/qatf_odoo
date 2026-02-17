@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Root Menu -->
+    <menuitem id="menu_farm_management_root"
+              name="إدارة المزارع"
+              action="farm_farm_action"
+              web_icon="farm_management,static/description/icon.png"
+              sequence="50"/>
+
+    <!-- ============================================================ -->
+    <!-- FARMS MENU -->
+    <!-- ============================================================ -->
+    <menuitem id="menu_farm_farms"
+              name="المزارع"
+              parent="menu_farm_management_root"
+              sequence="10"/>
+
+    <menuitem id="menu_farm_farm_list"
+              name="المزارع"
+              parent="menu_farm_farms"
+              action="farm_farm_action"
+              sequence="10"/>
+
+    <menuitem id="menu_farm_sector_list"
+              name="القطاعات"
+              parent="menu_farm_farms"
+              action="farm_sector_action"
+              sequence="20"/>
+
+    <menuitem id="menu_farm_unit_list"
+              name="الوحدات"
+              parent="menu_farm_farms"
+              action="farm_unit_action"
+              sequence="30"/>
+
+    <menuitem id="menu_farm_house_list"
+              name="البيوت"
+              parent="menu_farm_farms"
+              action="farm_house_action"
+              sequence="40"/>
+
+    <menuitem id="menu_farm_import"
+              name="استيراد المزارع"
+              parent="menu_farm_farms"
+              action="action_farm_import_wizard"
+              sequence="50"/>
+
+    <!-- ============================================================ -->
+    <!-- PROJECTS MENU -->
+    <!-- ============================================================ -->
+    <menuitem id="menu_farm_projects"
+              name="المشاريع"
+              parent="menu_farm_management_root"
+              sequence="20"/>
+
+    <menuitem id="menu_farm_project_list"
+              name="جميع المشاريع"
+              parent="menu_farm_projects"
+              action="farm_project_action"
+              sequence="10"/>
+
+    <menuitem id="menu_farm_project_house_list"
+              name="تخصيصات البيوت"
+              parent="menu_farm_projects"
+              action="farm_project_house_action"
+              sequence="20"/>
+
+    <menuitem id="menu_project_import"
+              name="استيراد المشاريع"
+              parent="menu_farm_projects"
+              action="action_project_import_wizard"
+              sequence="30"/>
+
+    <!-- ============================================================ -->
+    <!-- HARVESTS MENU -->
+    <!-- ============================================================ -->
+    <menuitem id="menu_farm_harvests"
+              name="الحصاد"
+              parent="menu_farm_management_root"
+              sequence="25"/>
+
+    <menuitem id="menu_farm_harvest_entry"
+              name="سجلات الحصاد"
+              parent="menu_farm_harvests"
+              action="farm_harvest_entry_action"
+              sequence="10"/>
+
+    <menuitem id="menu_farm_production_kpi"
+              name="مؤشرات الإنتاج"
+              parent="menu_farm_harvests"
+              action="farm_production_kpi_action"
+              sequence="20"/>
+
+    <!-- ============================================================ -->
+    <!-- PRODUCT ORDERS MENU -->
+    <!-- ============================================================ -->
+    <menuitem id="menu_farm_orders"
+              name="طلبات المنتجات"
+              parent="menu_farm_management_root"
+              sequence="28"/>
+
+    <menuitem id="menu_farm_order_pipeline"
+              name="الطلبات (Pipeline)"
+              parent="menu_farm_orders"
+              action="farm_product_order_action"
+              sequence="10"/>
+
+    <menuitem id="menu_farm_order_list"
+              name="قائمة الطلبات"
+              parent="menu_farm_orders"
+              action="farm_product_order_list_action"
+              sequence="20"/>
+
+    <menuitem id="menu_farm_order_lines"
+              name="تفاصيل الطلبات"
+              parent="menu_farm_orders"
+              action="farm_product_order_line_action"
+              sequence="30"/>
+
+    <!-- ============================================================ -->
+    <!-- COST MANAGEMENT MENU -->
+    <!-- ============================================================ -->
+    <menuitem id="menu_farm_costs"
+              name="إدارة التكاليف"
+              parent="menu_farm_management_root"
+              sequence="30"
+              groups="group_farm_accountant,group_farm_manager"/>
+
+    <menuitem id="menu_farm_cost_entry"
+              name="إدخال التكاليف"
+              parent="menu_farm_costs"
+              action="farm_project_cost_action"
+              sequence="10"/>
+
+    <menuitem id="menu_farm_cost_ledger"
+              name="سجل التكاليف"
+              parent="menu_farm_costs"
+              action="farm_cost_ledger_action"
+              sequence="20"/>
+
+    <menuitem id="menu_farm_cost_allocation"
+              name="توزيع التكاليف"
+              parent="menu_farm_costs"
+              action="farm_cost_allocation_action"
+              sequence="30"/>
+
+    <!-- ============================================================ -->
+    <!-- REPORTS MENU -->
+    <!-- ============================================================ -->
+    <menuitem id="menu_farm_reports"
+              name="التقارير"
+              parent="menu_farm_management_root"
+              sequence="40"
+              groups="group_farm_accountant,group_farm_manager"/>
+
+    <menuitem id="menu_farm_cost_analysis"
+              name="تحليل التكاليف"
+              parent="menu_farm_reports"
+              action="farm_cost_analysis_action"
+              sequence="10"/>
+
+    <menuitem id="menu_farm_cost_per_area"
+              name="التكلفة لكل متر مربع"
+              parent="menu_farm_reports"
+              action="farm_cost_per_area_action"
+              sequence="20"/>
+
+    <menuitem id="menu_farm_cost_hierarchy"
+              name="تحليل التكاليف حسب الهيكل"
+              parent="menu_farm_reports"
+              action="farm_cost_hierarchy_action"
+              sequence="30"/>
+
+    <menuitem id="menu_farm_harvest_cost_report"
+              name="تقرير تكلفة الحصاد"
+              parent="menu_farm_reports"
+              action="farm_harvest_cost_report_action"
+              sequence="40"/>
+
+    <menuitem id="menu_farm_harvest_hierarchy_report"
+              name="تحليل الحصاد حسب الهيكل"
+              parent="menu_farm_reports"
+              action="farm_harvest_hierarchy_report_action"
+              sequence="50"/>
+
+    <menuitem id="menu_farm_production_cost_report"
+              name="تقرير تكاليف الإنتاج"
+              parent="menu_farm_reports"
+              action="farm_production_cost_report_action"
+              sequence="60"/>
+
+    <!-- ============================================================ -->
+    <!-- INVENTORY MENU -->
+    <!-- ============================================================ -->
+    <menuitem id="menu_farm_inventory"
+              name="المخزون"
+              parent="menu_farm_management_root"
+              sequence="25"/>
+
+    <menuitem id="menu_farm_product_quick_add"
+              name="إضافة منتج سريع"
+              parent="menu_farm_inventory"
+              action="action_product_quick_add_wizard"
+              sequence="10"/>
+
+    <menuitem id="menu_farm_products"
+              name="المنتجات"
+              parent="menu_farm_inventory"
+              action="product.product_template_action"
+              sequence="20"/>
+
+    <menuitem id="menu_farm_product_categories"
+              name="تصنيفات المنتجات"
+              parent="menu_farm_inventory"
+              action="product.product_category_action_form"
+              sequence="30"/>
+
+    <!-- ============================================================ -->
+    <!-- CONFIGURATION MENU -->
+    <!-- ============================================================ -->
+    <menuitem id="menu_farm_configuration"
+              name="الإعدادات"
+              parent="menu_farm_management_root"
+              sequence="100"
+              groups="group_farm_manager"/>
+
+    <menuitem id="menu_farm_product_colors"
+              name="ألوان المنتجات"
+              parent="menu_farm_configuration"
+              action="action_farm_product_color"
+              sequence="10"/>
+
+    <menuitem id="menu_farm_download_templates"
+              name="تحميل قوالب الاستيراد"
+              parent="menu_farm_configuration"
+              action="action_template_download_wizard"
+              sequence="20"/>
+
+    <menuitem id="menu_farm_settings"
+              name="الإعدادات العامة"
+              parent="menu_farm_configuration"
+              action="action_farm_config_settings"
+              sequence="100"/>
+
+    <!-- ============================================================ -->
+    <!-- EXTERNAL MODULE MENUS -->
+    <!-- ============================================================ -->
+    
+    <!-- Costs menu in Accounting module (account.menu_finance_entries_management) -->
+    <menuitem id="menu_farm_cost_accounting"
+              name="تكاليف المزارع"
+              parent="account.menu_finance_entries_management"
+              action="farm_project_cost_action"
+              sequence="60"
+              groups="account.group_account_readonly"/>
+
+    <!-- Fast inventory add in Stock/Inventory module (stock.menu_stock_warehouse_mgmt) -->
+    <menuitem id="menu_stock_product_quick_add"
+              name="إضافة منتج سريع"
+              parent="stock.menu_stock_warehouse_mgmt"
+              action="action_product_quick_add_wizard"
+              sequence="50"/>
+
+</odoo>
+

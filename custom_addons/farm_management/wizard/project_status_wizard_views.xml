@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Status Wizard Form View -->
+    <record id="farm_project_status_wizard_view_form" model="ir.ui.view">
+        <field name="name">farm.project.status.wizard.view.form</field>
+        <field name="model">farm.project.status.wizard</field>
+        <field name="arch" type="xml">
+            <form string="تغيير حالة المشروع">
+                <group>
+                    <field name="project_id" readonly="1"/>
+                    <field name="action_type" invisible="1"/>
+                    <field name="reason" placeholder="أدخل سبب التغيير..." required="1"/>
+                </group>
+                <footer>
+                    <button name="action_confirm" type="object" string="تأكيد" class="btn-primary"/>
+                    <button string="إلغاء" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>
+

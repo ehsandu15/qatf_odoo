@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        <!-- ============================================================ -->
+        <!-- DEMO FARMS -->
+        <!-- ============================================================ -->
+        
+        <record id="demo_farm_1" model="farm.farm">
+            <field name="name">مزرعة النخيل الذهبي</field>
+            <field name="code">FARM001</field>
+            <field name="manager_id" ref="base.user_admin"/>
+            <field name="location">منطقة الرياض - المزاحمية</field>
+            <field name="description">مزرعة متخصصة في إنتاج التمور والخضروات</field>
+        </record>
+
+        <record id="demo_farm_2" model="farm.farm">
+            <field name="name">مزرعة الواحة الخضراء</field>
+            <field name="code">FARM002</field>
+            <field name="manager_id" ref="base.user_admin"/>
+            <field name="location">منطقة القصيم - بريدة</field>
+            <field name="description">مزرعة بيوت محمية للخضروات والفواكه</field>
+        </record>
+
+        <!-- ============================================================ -->
+        <!-- DEMO SECTORS -->
+        <!-- ============================================================ -->
+        
+        <!-- Farm 1 Sectors -->
+        <record id="demo_sector_1_1" model="farm.sector">
+            <field name="name">القطاع الشمالي</field>
+            <field name="code">SEC01</field>
+            <field name="farm_id" ref="demo_farm_1"/>
+            <field name="description">القطاع الشمالي للبيوت المحمية</field>
+        </record>
+
+        <record id="demo_sector_1_2" model="farm.sector">
+            <field name="name">القطاع الجنوبي</field>
+            <field name="code">SEC02</field>
+            <field name="farm_id" ref="demo_farm_1"/>
+            <field name="description">القطاع الجنوبي للبيوت المحمية</field>
+        </record>
+
+        <!-- Farm 2 Sectors -->
+        <record id="demo_sector_2_1" model="farm.sector">
+            <field name="name">قطاع الخضروات</field>
+            <field name="code">SEC03</field>
+            <field name="farm_id" ref="demo_farm_2"/>
+            <field name="description">قطاع إنتاج الخضروات</field>
+        </record>
+
+        <record id="demo_sector_2_2" model="farm.sector">
+            <field name="name">قطاع الفواكه</field>
+            <field name="code">SEC04</field>
+            <field name="farm_id" ref="demo_farm_2"/>
+            <field name="description">قطاع إنتاج الفواكه</field>
+        </record>
+
+        <!-- ============================================================ -->
+        <!-- DEMO UNITS -->
+        <!-- ============================================================ -->
+        
+        <!-- Sector 1_1 Units -->
+        <record id="demo_unit_1_1_1" model="farm.unit">
+            <field name="name">الوحدة أ</field>
+            <field name="code">UNIT01</field>
+            <field name="sector_id" ref="demo_sector_1_1"/>
+            <field name="description">وحدة الإنتاج الأولى</field>
+        </record>
+
+        <record id="demo_unit_1_1_2" model="farm.unit">
+            <field name="name">الوحدة ب</field>
+            <field name="code">UNIT02</field>
+            <field name="sector_id" ref="demo_sector_1_1"/>
+            <field name="description">وحدة الإنتاج الثانية</field>
+        </record>
+
+        <!-- Sector 1_2 Units -->
+        <record id="demo_unit_1_2_1" model="farm.unit">
+            <field name="name">الوحدة ج</field>
+            <field name="code">UNIT03</field>
+            <field name="sector_id" ref="demo_sector_1_2"/>
+            <field name="description">وحدة الإنتاج الثالثة</field>
+        </record>
+
+        <!-- Sector 2_1 Units -->
+        <record id="demo_unit_2_1_1" model="farm.unit">
+            <field name="name">وحدة الطماطم</field>
+            <field name="code">UNIT04</field>
+            <field name="sector_id" ref="demo_sector_2_1"/>
+            <field name="description">وحدة إنتاج الطماطم</field>
+        </record>
+
+        <record id="demo_unit_2_1_2" model="farm.unit">
+            <field name="name">وحدة الخيار</field>
+            <field name="code">UNIT05</field>
+            <field name="sector_id" ref="demo_sector_2_1"/>
+            <field name="description">وحدة إنتاج الخيار</field>
+        </record>
+
+        <!-- ============================================================ -->
+        <!-- DEMO HOUSES -->
+        <!-- ============================================================ -->
+        
+        <!-- Unit 1_1_1 Houses -->
+        <record id="demo_house_1" model="farm.house">
+            <field name="name">بيت 1</field>
+            <field name="code">H001</field>
+            <field name="unit_id" ref="demo_unit_1_1_1"/>
+            <field name="area">500</field>
+            <field name="description">بيت محمي للطماطم</field>
+        </record>
+
+        <record id="demo_house_2" model="farm.house">
+            <field name="name">بيت 2</field>
+            <field name="code">H002</field>
+            <field name="unit_id" ref="demo_unit_1_1_1"/>
+            <field name="area">600</field>
+            <field name="description">بيت محمي للخيار</field>
+        </record>
+
+        <!-- Unit 1_1_2 Houses -->
+        <record id="demo_house_3" model="farm.house">
+            <field name="name">بيت 3</field>
+            <field name="code">H003</field>
+            <field name="unit_id" ref="demo_unit_1_1_2"/>
+            <field name="area">450</field>
+            <field name="description">بيت محمي للفلفل</field>
+        </record>
+
+        <record id="demo_house_4" model="farm.house">
+            <field name="name">بيت 4</field>
+            <field name="code">H004</field>
+            <field name="unit_id" ref="demo_unit_1_1_2"/>
+            <field name="area">550</field>
+            <field name="description">بيت محمي للباذنجان</field>
+        </record>
+
+        <!-- Unit 1_2_1 Houses -->
+        <record id="demo_house_5" model="farm.house">
+            <field name="name">بيت 5</field>
+            <field name="code">H005</field>
+            <field name="unit_id" ref="demo_unit_1_2_1"/>
+            <field name="area">700</field>
+            <field name="description">بيت محمي كبير</field>
+        </record>
+
+        <record id="demo_house_6" model="farm.house">
+            <field name="name">بيت 6</field>
+            <field name="code">H006</field>
+            <field name="unit_id" ref="demo_unit_1_2_1"/>
+            <field name="area">650</field>
+            <field name="description">بيت محمي متوسط</field>
+        </record>
+
+        <!-- Unit 2_1_1 Houses -->
+        <record id="demo_house_7" model="farm.house">
+            <field name="name">بيت طماطم 1</field>
+            <field name="code">H007</field>
+            <field name="unit_id" ref="demo_unit_2_1_1"/>
+            <field name="area">800</field>
+            <field name="description">بيت إنتاج طماطم</field>
+        </record>
+
+        <record id="demo_house_8" model="farm.house">
+            <field name="name">بيت طماطم 2</field>
+            <field name="code">H008</field>
+            <field name="unit_id" ref="demo_unit_2_1_1"/>
+            <field name="area">750</field>
+            <field name="description">بيت إنتاج طماطم</field>
+        </record>
+
+        <!-- Unit 2_1_2 Houses -->
+        <record id="demo_house_9" model="farm.house">
+            <field name="name">بيت خيار 1</field>
+            <field name="code">H009</field>
+            <field name="unit_id" ref="demo_unit_2_1_2"/>
+            <field name="area">600</field>
+            <field name="description">بيت إنتاج خيار</field>
+        </record>
+
+        <record id="demo_house_10" model="farm.house">
+            <field name="name">بيت خيار 2</field>
+            <field name="code">H010</field>
+            <field name="unit_id" ref="demo_unit_2_1_2"/>
+            <field name="area">550</field>
+            <field name="description">بيت إنتاج خيار</field>
+        </record>
+
+        <!-- ============================================================ -->
+        <!-- DEMO PROJECTS -->
+        <!-- ============================================================ -->
+        
+        <record id="demo_project_1" model="farm.project">
+            <field name="name">مشروع إنتاج الطماطم - الموسم الشتوي</field>
+            <field name="farm_id" ref="demo_farm_1"/>
+            <field name="planned_start_date" eval="(DateTime.today() - relativedelta(months=2)).strftime('%Y-%m-%d')"/>
+            <field name="expected_finish_date" eval="(DateTime.today() + relativedelta(months=4)).strftime('%Y-%m-%d')"/>
+            <field name="status">in_progress</field>
+            <field name="actual_start_date" eval="(DateTime.today() - relativedelta(months=2)).strftime('%Y-%m-%d')"/>
+            <field name="notes">مشروع إنتاج الطماطم للموسم الشتوي 2024</field>
+        </record>
+
+        <record id="demo_project_2" model="farm.project">
+            <field name="name">مشروع إنتاج الخيار - الربيع</field>
+            <field name="farm_id" ref="demo_farm_1"/>
+            <field name="planned_start_date" eval="(DateTime.today() + relativedelta(months=1)).strftime('%Y-%m-%d')"/>
+            <field name="expected_finish_date" eval="(DateTime.today() + relativedelta(months=5)).strftime('%Y-%m-%d')"/>
+            <field name="status">draft</field>
+            <field name="notes">مشروع إنتاج الخيار لموسم الربيع</field>
+        </record>
+
+        <record id="demo_project_3" model="farm.project">
+            <field name="name">مشروع الخضروات المتنوعة</field>
+            <field name="farm_id" ref="demo_farm_2"/>
+            <field name="planned_start_date" eval="(DateTime.today() - relativedelta(months=1)).strftime('%Y-%m-%d')"/>
+            <field name="expected_finish_date" eval="(DateTime.today() + relativedelta(months=3)).strftime('%Y-%m-%d')"/>
+            <field name="status">in_progress</field>
+            <field name="actual_start_date" eval="(DateTime.today() - relativedelta(months=1)).strftime('%Y-%m-%d')"/>
+            <field name="notes">مشروع إنتاج خضروات متنوعة</field>
+        </record>
+
+        <!-- ============================================================ -->
+        <!-- DEMO PROJECT HOUSE ASSIGNMENTS -->
+        <!-- ============================================================ -->
+        
+        <!-- Project 1 Houses -->
+        <record id="demo_ph_1_1" model="farm.project.house">
+            <field name="project_id" ref="demo_project_1"/>
+            <field name="house_id" ref="demo_house_1"/>
+            <field name="activity_description">إنتاج طماطم شيري</field>
+            <field name="quantity_planned">5000</field>
+        </record>
+
+        <record id="demo_ph_1_2" model="farm.project.house">
+            <field name="project_id" ref="demo_project_1"/>
+            <field name="house_id" ref="demo_house_2"/>
+            <field name="activity_description">إنتاج طماطم بيف</field>
+            <field name="quantity_planned">4500</field>
+        </record>
+
+        <record id="demo_ph_1_3" model="farm.project.house">
+            <field name="project_id" ref="demo_project_1"/>
+            <field name="house_id" ref="demo_house_3"/>
+            <field name="activity_description">إنتاج طماطم عنقودي</field>
+            <field name="quantity_planned">4000</field>
+        </record>
+
+        <record id="demo_ph_1_4" model="farm.project.house">
+            <field name="project_id" ref="demo_project_1"/>
+            <field name="house_id" ref="demo_house_4"/>
+            <field name="activity_description">إنتاج طماطم كبير</field>
+            <field name="quantity_planned">3500</field>
+        </record>
+
+        <!-- Project 2 Houses -->
+        <record id="demo_ph_2_1" model="farm.project.house">
+            <field name="project_id" ref="demo_project_2"/>
+            <field name="house_id" ref="demo_house_5"/>
+            <field name="activity_description">إنتاج خيار طويل</field>
+            <field name="quantity_planned">6000</field>
+        </record>
+
+        <record id="demo_ph_2_2" model="farm.project.house">
+            <field name="project_id" ref="demo_project_2"/>
+            <field name="house_id" ref="demo_house_6"/>
+            <field name="activity_description">إنتاج خيار قصير</field>
+            <field name="quantity_planned">5500</field>
+        </record>
+
+        <!-- Project 3 Houses -->
+        <record id="demo_ph_3_1" model="farm.project.house">
+            <field name="project_id" ref="demo_project_3"/>
+            <field name="house_id" ref="demo_house_7"/>
+            <field name="activity_description">طماطم</field>
+            <field name="quantity_planned">7000</field>
+        </record>
+
+        <record id="demo_ph_3_2" model="farm.project.house">
+            <field name="project_id" ref="demo_project_3"/>
+            <field name="house_id" ref="demo_house_8"/>
+            <field name="activity_description">طماطم</field>
+            <field name="quantity_planned">6500</field>
+        </record>
+
+        <record id="demo_ph_3_3" model="farm.project.house">
+            <field name="project_id" ref="demo_project_3"/>
+            <field name="house_id" ref="demo_house_9"/>
+            <field name="activity_description">خيار</field>
+            <field name="quantity_planned">5000</field>
+        </record>
+
+        <record id="demo_ph_3_4" model="farm.project.house">
+            <field name="project_id" ref="demo_project_3"/>
+            <field name="house_id" ref="demo_house_10"/>
+            <field name="activity_description">خيار</field>
+            <field name="quantity_planned">4500</field>
+        </record>
+
+        <!-- ============================================================ -->
+        <!-- DEMO STATUS HISTORY -->
+        <!-- ============================================================ -->
+        
+        <record id="demo_status_1_start" model="farm.project.status.history">
+            <field name="project_id" ref="demo_project_1"/>
+            <field name="old_status">draft</field>
+            <field name="new_status">in_progress</field>
+            <field name="user_id" ref="base.user_admin"/>
+            <field name="reason">بدء المشروع حسب الخطة المعتمدة</field>
+        </record>
+
+        <record id="demo_status_3_start" model="farm.project.status.history">
+            <field name="project_id" ref="demo_project_3"/>
+            <field name="old_status">draft</field>
+            <field name="new_status">in_progress</field>
+            <field name="user_id" ref="base.user_admin"/>
+            <field name="reason">بدء مشروع الخضروات المتنوعة</field>
+        </record>
+
+    </data>
+</odoo>
+

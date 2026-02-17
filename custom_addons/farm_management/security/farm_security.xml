@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Module Category -->
+    <record id="module_category_farm_management" model="ir.module.category">
+        <field name="name">إدارة المزارع</field>
+        <field name="description">صلاحيات إدارة المزارع ومشاريع الإنتاج</field>
+        <field name="sequence">20</field>
+    </record>
+
+    <!-- Security Groups -->
+    <record id="group_farm_user" model="res.groups">
+        <field name="name">مستخدم المزارع</field>
+        <field name="category_id" ref="module_category_farm_management"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        <field name="comment">يمكنه عرض وتعديل المزارع والمشاريع المخصصة له</field>
+    </record>
+
+    <record id="group_farm_manager" model="res.groups">
+        <field name="name">مدير المزارع</field>
+        <field name="category_id" ref="module_category_farm_management"/>
+        <field name="implied_ids" eval="[(4, ref('group_farm_user'))]"/>
+        <field name="users" eval="[(4, ref('base.user_admin')), (4, ref('base.user_root'))]"/>
+        <field name="comment">صلاحية كاملة على جميع المزارع والمشاريع</field>
+    </record>
+
+    <record id="group_farm_accountant" model="res.groups">
+        <field name="name">محاسب المزارع</field>
+        <field name="category_id" ref="module_category_farm_management"/>
+        <field name="implied_ids" eval="[(4, ref('group_farm_user'))]"/>
+        <field name="comment">صلاحية على التكاليف والتقارير المالية</field>
+    </record>
+
+</odoo>

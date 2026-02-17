@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        <!-- ============================================== -->
+        <!-- Parent Categories (by Warehouse Type)          -->
+        <!-- ============================================== -->
+        
+        <!-- Seeds and Seedlings - البذور والتقاوي (10) -->
+        <record id="categ_parent_seeds" model="product.category">
+            <field name="name">البذور والتقاوي</field>
+            <field name="parent_id" ref="product.product_category_all"/>
+        </record>
+        
+        <!-- Fertilizers - الاسمدة (20) -->
+        <record id="categ_parent_fertilizers" model="product.category">
+            <field name="name">الاسمدة</field>
+            <field name="parent_id" ref="product.product_category_all"/>
+        </record>
+        
+        <!-- Pesticides - المبيدات (30) -->
+        <record id="categ_parent_pesticides" model="product.category">
+            <field name="name">المبيدات</field>
+            <field name="parent_id" ref="product.product_category_all"/>
+        </record>
+        
+        <!-- Agricultural Supplies - المستلزمات الزراعية (40) -->
+        <record id="categ_parent_agri_supplies" model="product.category">
+            <field name="name">المستلزمات الزراعية</field>
+            <field name="parent_id" ref="product.product_category_all"/>
+        </record>
+        
+        <!-- Packaging Materials - مواد التغليف (50) -->
+        <record id="categ_parent_packaging" model="product.category">
+            <field name="name">مواد التغليف</field>
+            <field name="parent_id" ref="product.product_category_all"/>
+        </record>
+        
+        <!-- Spare Parts and Maintenance - قطع الغيار والصيانة (60) -->
+        <record id="categ_parent_spare_parts" model="product.category">
+            <field name="name">قطع الغيار والصيانة</field>
+            <field name="parent_id" ref="product.product_category_all"/>
+        </record>
+        
+        <!-- Finished Products - الانتاج التام (70) -->
+        <record id="categ_parent_finished" model="product.category">
+            <field name="name">الانتاج التام</field>
+            <field name="parent_id" ref="product.product_category_all"/>
+        </record>
+        
+        <!-- ============================================== -->
+        <!-- Seeds Categories - فئات البذور (10)           -->
+        <!-- ============================================== -->
+        
+        <record id="categ_101_tomato_seeds" model="product.category">
+            <field name="name">بذور طماطم</field>
+            <field name="parent_id" ref="categ_parent_seeds"/>
+        </record>
+        
+        <record id="categ_102_cherry_tomato_seeds" model="product.category">
+            <field name="name">بذور طماطم شيرى</field>
+            <field name="parent_id" ref="categ_parent_seeds"/>
+        </record>
+        
+        <record id="categ_103_pepper_seeds" model="product.category">
+            <field name="name">بذور فلفل</field>
+            <field name="parent_id" ref="categ_parent_seeds"/>
+        </record>
+        
+        <record id="categ_104_cucumber_seeds" model="product.category">
+            <field name="name">بذور خيار</field>
+            <field name="parent_id" ref="categ_parent_seeds"/>
+        </record>
+        
+        <record id="categ_105_broccoli_seeds" model="product.category">
+            <field name="name">بذور بروكلى</field>
+            <field name="parent_id" ref="categ_parent_seeds"/>
+        </record>
+        
+        <record id="categ_106_greta_flower" model="product.category">
+            <field name="name">زهرة جريتا</field>
+            <field name="parent_id" ref="categ_parent_seeds"/>
+        </record>
+        
+        <record id="categ_107_cabbage_seeds" model="product.category">
+            <field name="name">بذور ملفوف</field>
+            <field name="parent_id" ref="categ_parent_seeds"/>
+        </record>
+        
+        <record id="categ_108_lettuce_seeds" model="product.category">
+            <field name="name">بذور خس</field>
+            <field name="parent_id" ref="categ_parent_seeds"/>
+        </record>
+        
+        <record id="categ_109_beans_seeds" model="product.category">
+            <field name="name">بذور فاصوليا</field>
+            <field name="parent_id" ref="categ_parent_seeds"/>
+        </record>
+        
+        <record id="categ_110_squash_seeds" model="product.category">
+            <field name="name">بذور قرع</field>
+            <field name="parent_id" ref="categ_parent_seeds"/>
+        </record>
+        
+        <record id="categ_111_purslane_seeds" model="product.category">
+            <field name="name">بذور رجلة</field>
+            <field name="parent_id" ref="categ_parent_seeds"/>
+        </record>
+        
+        <record id="categ_112_eggplant_seeds" model="product.category">
+            <field name="name">بذور باذنجان</field>
+            <field name="parent_id" ref="categ_parent_seeds"/>
+        </record>
+        
+        <record id="categ_113_zucchini_seeds" model="product.category">
+            <field name="name">بذور كوسة</field>
+            <field name="parent_id" ref="categ_parent_seeds"/>
+        </record>
+        
+        <record id="categ_114_coriander_seeds" model="product.category">
+            <field name="name">بذور كزبرة</field>
+            <field name="parent_id" ref="categ_parent_seeds"/>
+        </record>
+        
+        <!-- ============================================== -->
+        <!-- Fertilizers Categories - فئات الاسمدة (20)    -->
+        <!-- ============================================== -->
+        
+        <record id="categ_201_basic_acids" model="product.category">
+            <field name="name">اسمدة اساسية احماض</field>
+            <field name="parent_id" ref="categ_parent_fertilizers"/>
+        </record>
+        
+        <record id="categ_202_basic_single_elements" model="product.category">
+            <field name="name">اسمدة اساسية عناصر احادية</field>
+            <field name="parent_id" ref="categ_parent_fertilizers"/>
+        </record>
+        
+        <record id="categ_203_basic_compound" model="product.category">
+            <field name="name">اسمدة اساسية مركبة</field>
+            <field name="parent_id" ref="categ_parent_fertilizers"/>
+        </record>
+        
+        <record id="categ_204_compound" model="product.category">
+            <field name="name">اسمدة مركبة</field>
+            <field name="parent_id" ref="categ_parent_fertilizers"/>
+        </record>
+        
+        <record id="categ_205_soil_improver" model="product.category">
+            <field name="name">اسمدة محسن تربة</field>
+            <field name="parent_id" ref="categ_parent_fertilizers"/>
+        </record>
+        
+        <record id="categ_206_micro_elements" model="product.category">
+            <field name="name">اسمدة عناصر صغري</field>
+            <field name="parent_id" ref="categ_parent_fertilizers"/>
+        </record>
+        
+        <record id="categ_207_liquid_compound" model="product.category">
+            <field name="name">اسمدة مركبة سائلة</field>
+            <field name="parent_id" ref="categ_parent_fertilizers"/>
+        </record>
+        
+        <record id="categ_208_liquid_organic" model="product.category">
+            <field name="name">اسمدة عضوية سائلة</field>
+            <field name="parent_id" ref="categ_parent_fertilizers"/>
+        </record>
+        
+        <record id="categ_209_liquid" model="product.category">
+            <field name="name">اسمدة سائلة</field>
+            <field name="parent_id" ref="categ_parent_fertilizers"/>
+        </record>
+        
+        <record id="categ_210_liquid_acids" model="product.category">
+            <field name="name">اسمدة احماض سائلة</field>
+            <field name="parent_id" ref="categ_parent_fertilizers"/>
+        </record>
+        
+        <record id="categ_211_growth_stimulants" model="product.category">
+            <field name="name">اسمدة محفزة نمو</field>
+            <field name="parent_id" ref="categ_parent_fertilizers"/>
+        </record>
+        
+        <!-- ============================================== -->
+        <!-- Pesticides Categories - فئات المبيدات (30)    -->
+        <!-- ============================================== -->
+        
+        <record id="categ_301_sterilization" model="product.category">
+            <field name="name">مبيدات - مواد تعقيم وتطهير</field>
+            <field name="parent_id" ref="categ_parent_pesticides"/>
+        </record>
+        
+        <record id="categ_302_insecticides" model="product.category">
+            <field name="name">مبيدات حشرية</field>
+            <field name="parent_id" ref="categ_parent_pesticides"/>
+        </record>
+        
+        <record id="categ_303_fungicides" model="product.category">
+            <field name="name">مبيدات فطرية</field>
+            <field name="parent_id" ref="categ_parent_pesticides"/>
+        </record>
+        
+        <record id="categ_304_herbicides" model="product.category">
+            <field name="name">مبيدات حشائش</field>
+            <field name="parent_id" ref="categ_parent_pesticides"/>
+        </record>
+        
+        <record id="categ_305_public_health" model="product.category">
+            <field name="name">مبيدات صحة عامة</field>
+            <field name="parent_id" ref="categ_parent_pesticides"/>
+        </record>
+        
+        <record id="categ_306_bactericides" model="product.category">
+            <field name="name">مبيدات بكتيرى</field>
+            <field name="parent_id" ref="categ_parent_pesticides"/>
+        </record>
+        
+        <record id="categ_307_nematicides" model="product.category">
+            <field name="name">مبيدات حشرية - نيماتودا</field>
+            <field name="parent_id" ref="categ_parent_pesticides"/>
+        </record>
+        
+        <!-- ============================================== -->
+        <!-- Agricultural Supplies - المستلزمات الزراعية (40) -->
+        <!-- ============================================== -->
+        
+        <record id="categ_401_agri_supplies" model="product.category">
+            <field name="name">مستلزمات زراعية</field>
+            <field name="parent_id" ref="categ_parent_agri_supplies"/>
+        </record>
+        
+        <record id="categ_402_pest_control_supplies" model="product.category">
+            <field name="name">مستلزمات مكافحة</field>
+            <field name="parent_id" ref="categ_parent_agri_supplies"/>
+        </record>
+        
+        <record id="categ_403_artificial_soil" model="product.category">
+            <field name="name">تربة صناعية</field>
+            <field name="parent_id" ref="categ_parent_agri_supplies"/>
+        </record>
+        
+        <record id="categ_404_soil_conditioner" model="product.category">
+            <field name="name">محسن تربة</field>
+            <field name="parent_id" ref="categ_parent_agri_supplies"/>
+        </record>
+        
+        <record id="categ_405_plastic_nets" model="product.category">
+            <field name="name">بلاستيك وشبك</field>
+            <field name="parent_id" ref="categ_parent_agri_supplies"/>
+        </record>
+        
+        <!-- ============================================== -->
+        <!-- Packaging Materials - مواد التغليف (50)       -->
+        <!-- ============================================== -->
+        
+        <record id="categ_501_cartons" model="product.category">
+            <field name="name">كرتون</field>
+            <field name="parent_id" ref="categ_parent_packaging"/>
+        </record>
+        
+        <record id="categ_502_kraft_boxes" model="product.category">
+            <field name="name">علب كرافت</field>
+            <field name="parent_id" ref="categ_parent_packaging"/>
+        </record>
+        
+        <record id="categ_503_polystyrene_boxes" model="product.category">
+            <field name="name">صناديق بوليستارين</field>
+            <field name="parent_id" ref="categ_parent_packaging"/>
+        </record>
+        
+        <record id="categ_504_stickers" model="product.category">
+            <field name="name">استيكرات</field>
+            <field name="parent_id" ref="categ_parent_packaging"/>
+        </record>
+        
+        <record id="categ_505_plastic_bags" model="product.category">
+            <field name="name">اكياس بلاستيك</field>
+            <field name="parent_id" ref="categ_parent_packaging"/>
+        </record>
+        
+        <record id="categ_506_wrapping_tape_glue" model="product.category">
+            <field name="name">رول تغليف و تيب و غراء</field>
+            <field name="parent_id" ref="categ_parent_packaging"/>
+        </record>
+        
+        <!-- ============================================== -->
+        <!-- Spare Parts and Maintenance - قطع الغيار (60) -->
+        <!-- ============================================== -->
+        
+        <record id="categ_601_oils" model="product.category">
+            <field name="name">الزيوت</field>
+            <field name="parent_id" ref="categ_parent_spare_parts"/>
+        </record>
+        
+        <record id="categ_602_bearings" model="product.category">
+            <field name="name">رومان بلي</field>
+            <field name="parent_id" ref="categ_parent_spare_parts"/>
+        </record>
+        
+        <record id="categ_603_belts" model="product.category">
+            <field name="name">سيور</field>
+            <field name="parent_id" ref="categ_parent_spare_parts"/>
+        </record>
+        
+        <record id="categ_604_misc_maintenance" model="product.category">
+            <field name="name">صيانة متنوع</field>
+            <field name="parent_id" ref="categ_parent_spare_parts"/>
+        </record>
+        
+        <record id="categ_605_filters" model="product.category">
+            <field name="name">فلاتر</field>
+            <field name="parent_id" ref="categ_parent_spare_parts"/>
+        </record>
+        
+        <record id="categ_606_tires" model="product.category">
+            <field name="name">كفرات</field>
+            <field name="parent_id" ref="categ_parent_spare_parts"/>
+        </record>
+        
+        <!-- ============================================== -->
+        <!-- Finished Products - الانتاج التام (70)        -->
+        <!-- ============================================== -->
+        
+        <record id="categ_701_tomato_finished" model="product.category">
+            <field name="name">طماطم - انتاج تام</field>
+            <field name="parent_id" ref="categ_parent_finished"/>
+        </record>
+        
+        <record id="categ_702_cucumber_finished" model="product.category">
+            <field name="name">خيار - انتاج تام</field>
+            <field name="parent_id" ref="categ_parent_finished"/>
+        </record>
+        
+        <record id="categ_703_pepper_finished" model="product.category">
+            <field name="name">فلفل - انتاج تام</field>
+            <field name="parent_id" ref="categ_parent_finished"/>
+        </record>
+        
+        <record id="categ_704_zucchini_finished" model="product.category">
+            <field name="name">كوسة - انتاج تام</field>
+            <field name="parent_id" ref="categ_parent_finished"/>
+        </record>
+        
+        <record id="categ_705_eggplant_finished" model="product.category">
+            <field name="name">باذنجان - انتاج تام</field>
+            <field name="parent_id" ref="categ_parent_finished"/>
+        </record>
+        
+        <record id="categ_706_lettuce_finished" model="product.category">
+            <field name="name">خس - انتاج تام</field>
+            <field name="parent_id" ref="categ_parent_finished"/>
+        </record>
+        
+        <record id="categ_707_chard_finished" model="product.category">
+            <field name="name">سلق - انتاج تام</field>
+            <field name="parent_id" ref="categ_parent_finished"/>
+        </record>
+        
+        <record id="categ_708_turnip_finished" model="product.category">
+            <field name="name">لفت - انتاج تام</field>
+            <field name="parent_id" ref="categ_parent_finished"/>
+        </record>
+        
+        <record id="categ_709_beans_finished" model="product.category">
+            <field name="name">فول - انتاج تام</field>
+            <field name="parent_id" ref="categ_parent_finished"/>
+        </record>
+        
+        <record id="categ_710_spinach_finished" model="product.category">
+            <field name="name">سبانخ - انتاج تام</field>
+            <field name="parent_id" ref="categ_parent_finished"/>
+        </record>
+        
+        <record id="categ_711_black_eggplant" model="product.category">
+            <field name="name">باذنجان اسود</field>
+            <field name="parent_id" ref="categ_parent_finished"/>
+        </record>
+        
+        <record id="categ_718_zucchini" model="product.category">
+            <field name="name">كوسة</field>
+            <field name="parent_id" ref="categ_parent_finished"/>
+        </record>
+        
+        <record id="categ_719_beet" model="product.category">
+            <field name="name">بنجر</field>
+            <field name="parent_id" ref="categ_parent_finished"/>
+        </record>
+        
+        <record id="categ_720_coriander" model="product.category">
+            <field name="name">كزبرة</field>
+            <field name="parent_id" ref="categ_parent_finished"/>
+        </record>
+        
+    </data>
+</odoo>
+
+
+
+
+
+

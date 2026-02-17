@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ============================================================ -->
+    <!-- FARM IMPORT WIZARD -->
+    <!-- ============================================================ -->
+    
+    <record id="farm_import_wizard_view_form" model="ir.ui.view">
+        <field name="name">farm.import.wizard.view.form</field>
+        <field name="model">farm.import.wizard</field>
+        <field name="arch" type="xml">
+            <form string="استيراد المزارع">
+                <group invisible="import_log">
+                    <group>
+                        <field name="file" filename="filename"/>
+                        <field name="filename" invisible="1"/>
+                    </group>
+                    <group>
+                        <div class="alert alert-info" role="alert">
+                            <strong>📥 تحميل القالب:</strong>
+                            <br/>
+                            <a href="/farm_management/download_template/farm_complete_import.xlsx" 
+                               class="btn btn-sm btn-secondary mt-2" target="_blank">
+                                <i class="fa fa-download"/> تحميل قالب المزارع (Excel)
+                            </a>
+                        </div>
+                    </group>
+                </group>
+                <group invisible="not import_log">
+                    <field name="import_log" readonly="1" nolabel="1" widget="text"/>
+                </group>
+                <footer invisible="import_log">
+                    <button name="action_import" type="object" string="استيراد" class="btn-primary"/>
+                    <button string="إلغاء" class="btn-secondary" special="cancel"/>
+                </footer>
+                <footer invisible="not import_log">
+                    <button string="إغلاق" class="btn-primary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_farm_import_wizard" model="ir.actions.act_window">
+        <field name="name">استيراد المزارع</field>
+        <field name="res_model">farm.import.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                استيراد المزارع من ملف CSV
+            </p>
+            <p>
+                يمكنك استيراد المزارع مع القطاعات والوحدات والبيوت من ملف واحد.
+            </p>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- PROJECT IMPORT WIZARD -->
+    <!-- ============================================================ -->
+    
+    <record id="project_import_wizard_view_form" model="ir.ui.view">
+        <field name="name">project.import.wizard.view.form</field>
+        <field name="model">project.import.wizard</field>
+        <field name="arch" type="xml">
+            <form string="استيراد المشاريع">
+                <group invisible="import_log">
+                    <group>
+                        <field name="file" filename="filename"/>
+                        <field name="filename" invisible="1"/>
+                    </group>
+                    <group>
+                        <div class="alert alert-info" role="alert">
+                            <strong>📥 تحميل القالب:</strong>
+                            <br/>
+                            <a href="/farm_management/download_template/project_complete_import.xlsx" 
+                               class="btn btn-sm btn-secondary mt-2" target="_blank">
+                                <i class="fa fa-download"/> تحميل قالب المشاريع (Excel)
+                            </a>
+                        </div>
+                    </group>
+                </group>
+                <group invisible="not import_log">
+                    <field name="import_log" readonly="1" nolabel="1" widget="text"/>
+                </group>
+                <footer invisible="import_log">
+                    <button name="action_import" type="object" string="استيراد" class="btn-primary"/>
+                    <button string="إلغاء" class="btn-secondary" special="cancel"/>
+                </footer>
+                <footer invisible="not import_log">
+                    <button string="إغلاق" class="btn-primary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_project_import_wizard" model="ir.actions.act_window">
+        <field name="name">استيراد المشاريع</field>
+        <field name="res_model">project.import.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                استيراد المشاريع من ملف CSV
+            </p>
+            <p>
+                يمكنك استيراد المشاريع مع تخصيصات البيوت من ملف واحد.
+            </p>
+        </field>
+    </record>
+
+</odoo>
+

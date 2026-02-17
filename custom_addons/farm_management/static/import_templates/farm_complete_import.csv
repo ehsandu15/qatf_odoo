@@ -1,0 +1,10 @@
+farm_name,farm_code,farm_location,sector_name,sector_code,unit_name,unit_code,house_name,house_code,house_area,house_type,house_description
+مزرعة النخيل,FARM001,الرياض,القطاع أ,SEC-A,وحدة 1,UNIT-A1,بيت 1,H-001,500,glass,بيت زجاجي للطماطم
+مزرعة النخيل,FARM001,الرياض,القطاع أ,SEC-A,وحدة 1,UNIT-A1,بيت 2,H-002,450,plastic,بيت بلاستيكي للخيار
+مزرعة النخيل,FARM001,الرياض,القطاع أ,SEC-A,وحدة 2,UNIT-A2,بيت 3,H-003,600,polycarbonate,بيت بوليكربونيت
+مزرعة النخيل,FARM001,الرياض,القطاع ب,SEC-B,وحدة 3,UNIT-B1,بيت 4,H-004,400,glass,بيت زجاجي
+مزرعة النخيل,FARM001,الرياض,القطاع ب,SEC-B,وحدة 3,UNIT-B1,بيت 5,H-005,550,plastic,بيت بلاستيكي
+مزرعة الورد,FARM002,جدة,القطاع 1,SEC-1,وحدة ورد 1,UNIT-R1,بيت ورد 1,HR-001,300,glass,بيت زجاجي للورد
+مزرعة الورد,FARM002,جدة,القطاع 1,SEC-1,وحدة ورد 1,UNIT-R1,بيت ورد 2,HR-002,350,glass,بيت زجاجي للورد
+مزرعة الورد,FARM002,جدة,القطاع 2,SEC-2,وحدة ورد 2,UNIT-R2,بيت ورد 3,HR-003,400,plastic,بيت بلاستيكي للورد
+

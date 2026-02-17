@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ============================================================ -->
+    <!-- HARVEST COST REPORT VIEWS -->
+    <!-- ============================================================ -->
+    
+    <!-- Harvest Cost Pivot Report -->
+    <record id="farm_harvest_cost_report_pivot" model="ir.ui.view">
+        <field name="name">farm.harvest.cost.report.pivot</field>
+        <field name="model">farm.harvest.entry</field>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <pivot string="تقرير تكلفة الحصاد">
+                <field name="project_id" type="row"/>
+                <field name="house_id" type="row"/>
+                <field name="product_id" type="col"/>
+                <field name="quantity" type="measure"/>
+                <field name="allocated_cost" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Harvest by Farm/Sector/Unit Pivot -->
+    <record id="farm_harvest_hierarchy_report_pivot" model="ir.ui.view">
+        <field name="name">farm.harvest.hierarchy.report.pivot</field>
+        <field name="model">farm.harvest.entry</field>
+        <field name="priority">30</field>
+        <field name="arch" type="xml">
+            <pivot string="تحليل الحصاد حسب الهيكل">
+                <field name="farm_id" type="row"/>
+                <field name="sector_id" type="row"/>
+                <field name="unit_id" type="row"/>
+                <field name="house_id" type="row"/>
+                <field name="date" interval="month" type="col"/>
+                <field name="quantity" type="measure"/>
+                <field name="allocated_cost" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Harvest Trend Graph -->
+    <record id="farm_harvest_trend_graph" model="ir.ui.view">
+        <field name="name">farm.harvest.trend.graph</field>
+        <field name="model">farm.harvest.entry</field>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <graph string="اتجاه الحصاد" type="line">
+                <field name="date" interval="month"/>
+                <field name="quantity" type="measure"/>
+                <field name="allocated_cost" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Harvest by Product Bar Chart -->
+    <record id="farm_harvest_product_graph" model="ir.ui.view">
+        <field name="name">farm.harvest.product.graph</field>
+        <field name="model">farm.harvest.entry</field>
+        <field name="priority">30</field>
+        <field name="arch" type="xml">
+            <graph string="الحصاد حسب المنتج" type="bar" stacked="1">
+                <field name="product_id"/>
+                <field name="quantity" type="measure"/>
+                <field name="allocated_cost" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- PRODUCTION KPI VIEWS (Project House) -->
+    <!-- ============================================================ -->
+    
+    <!-- Production KPI Pivot -->
+    <record id="farm_production_kpi_pivot" model="ir.ui.view">
+        <field name="name">farm.production.kpi.pivot</field>
+        <field name="model">farm.project.house</field>
+        <field name="arch" type="xml">
+            <pivot string="مؤشرات الإنتاج">
+                <field name="farm_id" type="row"/>
+                <field name="project_id" type="row"/>
+                <field name="house_id" type="row"/>
+                <field name="product_id" type="col"/>
+                <field name="expected_qty" type="measure" string="المتوقع"/>
+                <field name="total_harvested" type="measure" string="المحصود"/>
+                <field name="total_house_cost" type="measure" string="إجمالي التكلفة"/>
+                <field name="total_allocated_cost" type="measure" string="المخصص"/>
+                <field name="remaining_cost" type="measure" string="المتبقي"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Production KPI Graph -->
+    <record id="farm_production_kpi_graph" model="ir.ui.view">
+        <field name="name">farm.production.kpi.graph</field>
+        <field name="model">farm.project.house</field>
+        <field name="arch" type="xml">
+            <graph string="مقارنة المتوقع والمحصود" type="bar">
+                <field name="house_id"/>
+                <field name="expected_qty" type="measure" string="المتوقع"/>
+                <field name="total_harvested" type="measure" string="المحصود"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Production Cost Graph -->
+    <record id="farm_production_cost_graph" model="ir.ui.view">
+        <field name="name">farm.production.cost.graph</field>
+        <field name="model">farm.project.house</field>
+        <field name="arch" type="xml">
+            <graph string="تكاليف الإنتاج" type="bar" stacked="1">
+                <field name="project_id"/>
+                <field name="total_allocated_cost" type="measure" string="المخصص للحصاد"/>
+                <field name="remaining_cost" type="measure" string="المتبقي"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- REPORT ACTIONS -->
+    <!-- ============================================================ -->
+    
+    <!-- Harvest Cost Report Action -->
+    <record id="farm_harvest_cost_report_action" model="ir.actions.act_window">
+        <field name="name">تقرير تكلفة الحصاد</field>
+        <field name="res_model">farm.harvest.entry</field>
+        <field name="view_mode">pivot,graph,tree</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'pivot', 'view_id': ref('farm_harvest_cost_report_pivot')}),
+            (0, 0, {'view_mode': 'graph', 'view_id': ref('farm_harvest_trend_graph')}),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('farm_harvest_entry_view_tree')})]"/>
+        <field name="search_view_id" ref="farm_harvest_entry_view_search"/>
+    </record>
+
+    <!-- Harvest by Hierarchy Report Action -->
+    <record id="farm_harvest_hierarchy_report_action" model="ir.actions.act_window">
+        <field name="name">تحليل الحصاد حسب الهيكل</field>
+        <field name="res_model">farm.harvest.entry</field>
+        <field name="view_mode">pivot,graph,tree</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'pivot', 'view_id': ref('farm_harvest_hierarchy_report_pivot')}),
+            (0, 0, {'view_mode': 'graph', 'view_id': ref('farm_harvest_product_graph')}),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('farm_harvest_entry_view_tree')})]"/>
+        <field name="search_view_id" ref="farm_harvest_entry_view_search"/>
+    </record>
+
+    <!-- Production KPI Report Action -->
+    <record id="farm_production_kpi_action" model="ir.actions.act_window">
+        <field name="name">مؤشرات الإنتاج</field>
+        <field name="res_model">farm.project.house</field>
+        <field name="view_mode">pivot,graph,tree,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'pivot', 'view_id': ref('farm_production_kpi_pivot')}),
+            (0, 0, {'view_mode': 'graph', 'view_id': ref('farm_production_kpi_graph')}),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('farm_management.farm_project_house_view_tree')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('farm_management.farm_project_house_view_form')})]"/>
+        <field name="search_view_id" ref="farm_management.farm_project_house_view_search"/>
+    </record>
+
+    <!-- Production Cost Report Action -->
+    <record id="farm_production_cost_report_action" model="ir.actions.act_window">
+        <field name="name">تقرير تكاليف الإنتاج</field>
+        <field name="res_model">farm.project.house</field>
+        <field name="view_mode">pivot,graph,tree</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'pivot', 'view_id': ref('farm_production_kpi_pivot')}),
+            (0, 0, {'view_mode': 'graph', 'view_id': ref('farm_production_cost_graph')}),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('farm_management.farm_project_house_view_tree')})]"/>
+        <field name="search_view_id" ref="farm_management.farm_project_house_view_search"/>
+    </record>
+
+</odoo>
+

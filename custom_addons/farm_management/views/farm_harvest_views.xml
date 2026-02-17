@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ============================================================ -->
+    <!-- HARVEST ENTRY VIEWS -->
+    <!-- ============================================================ -->
+    
+    <!-- Harvest Entry Tree View -->
+    <record id="farm_harvest_entry_view_tree" model="ir.ui.view">
+        <field name="name">farm.harvest.entry.view.tree</field>
+        <field name="model">farm.harvest.entry</field>
+        <field name="arch" type="xml">
+            <tree string="سجلات الحصاد" decoration-muted="state == 'cancelled'">
+                <field name="date" string="التاريخ"/>
+                <field name="name" string="المرجع"/>
+                <field name="project_id" string="المشروع"/>
+                <field name="house_id" string="البيت"/>
+                <field name="product_id" string="المنتج"/>
+                <field name="quantity" string="الكمية"/>
+                <field name="uom_id" string="الوحدة" optional="show"/>
+                <field name="entry_progress" widget="progressbar" string="نسبة الحصاد" optional="show"/>
+                <field name="remaining_cost_before" string="التكلفة المتبقية" optional="show"/>
+                <field name="allocated_cost" string="التكلفة المخصصة" sum="المجموع"/>
+                <field name="unit_cost" string="تكلفة الوحدة"/>
+                <field name="cumulative_harvested" string="الإجمالي التراكمي" optional="hide"/>
+                <field name="cumulative_progress" string="نسبة الإنجاز" optional="hide"/>
+                <field name="cumulative_allocated" string="التكلفة التراكمية" optional="hide" sum="المجموع"/>
+                <field name="state" string="الحالة" widget="badge" 
+                       decoration-success="state == 'done'"
+                       decoration-danger="state == 'cancelled'"/>
+                <field name="currency_id" column_invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Harvest Entry Form View -->
+    <record id="farm_harvest_entry_view_form" model="ir.ui.view">
+        <field name="name">farm.harvest.entry.view.form</field>
+        <field name="model">farm.harvest.entry</field>
+        <field name="arch" type="xml">
+            <form string="سجل الحصاد">
+                <header>
+                    <button name="action_cancel" type="object" string="إلغاء" 
+                            class="btn-secondary" invisible="state == 'cancelled'"
+                            confirm="هل أنت متأكد من إلغاء هذا الحصاد؟ سيتم إلغاء حركة المخزون المرتبطة أيضاً."/>
+                    <button name="action_set_to_done" type="object" string="إعادة للمنتهي" 
+                            class="oe_highlight" invisible="state != 'cancelled'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="done,cancelled"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="ملغي" bg_color="bg-danger" invisible="state != 'cancelled'"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_recalculate_cost" type="object" 
+                                class="oe_stat_button" icon="fa-refresh"
+                                string="إعادة حساب التكلفة"/>
+                        <button name="action_create_stock_move" type="object" 
+                                class="oe_stat_button" icon="fa-cubes"
+                                string="إنشاء عملية نقل"
+                                invisible="picking_id"/>
+                        <button name="action_validate_stock_move" type="object" 
+                                class="oe_stat_button" icon="fa-check-circle"
+                                string="تأكيد عملية النقل"
+                                invisible="not picking_id or picking_id.state == 'done'"/>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="بيانات الحصاد">
+                            <field name="project_house_id" 
+                                   string="البيت (مشاريع قيد التنفيذ)"
+                                   options="{'no_create': True}"
+                                   domain="[('project_id.status', '=', 'in_progress')]"/>
+                            <field name="date" string="تاريخ الحصاد"/>
+                            <field name="quantity" string="الكمية المحصودة"/>
+                            <field name="uom_id" string="وحدة القياس"/>
+                        </group>
+                        <group string="معلومات المصدر">
+                            <field name="project_id" string="المشروع" readonly="1"/>
+                            <field name="house_id" string="البيت" readonly="1"/>
+                            <field name="product_id" string="المنتج" readonly="1"/>
+                            <field name="expected_qty" string="الكمية المتوقعة" readonly="1"/>
+                        </group>
+                    </group>
+                    
+                    <group string="التقدم">
+                        <group>
+                            <field name="entry_progress" widget="progressbar" string="نسبة هذا الحصاد"/>
+                            <field name="cumulative_harvested" string="إجمالي المحصود"/>
+                            <field name="cumulative_progress" widget="progressbar" string="نسبة الإنجاز الكلية"/>
+                        </group>
+                        <group>
+                            <field name="remaining_cost_before" string="التكلفة المتبقية قبل الحصاد"/>
+                            <field name="allocated_cost" string="التكلفة المخصصة لهذا الحصاد"/>
+                            <field name="unit_cost" string="تكلفة الوحدة"/>
+                            <field name="cumulative_allocated" string="إجمالي التكلفة المخصصة"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                    
+                    <group string="الموقع">
+                        <group>
+                            <field name="farm_id" string="المزرعة" readonly="1"/>
+                            <field name="sector_id" string="القطاع" readonly="1"/>
+                            <field name="unit_id" string="الوحدة" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="notes" placeholder="ملاحظات..." string="ملاحظات"/>
+                        </group>
+                    </group>
+                    
+                    <group string="عملية النقل" invisible="not picking_id">
+                        <group>
+                            <field name="picking_id" string="رقم عملية النقل" readonly="1"/>
+                            <field name="stock_move_id" string="حركة المخزون" readonly="1"/>
+                        </group>
+                    </group>
+                    <field name="stock_move_line_ids" invisible="not picking_id" readonly="1">
+                        <tree string="تفاصيل حركة المخزون" create="0" delete="0" edit="0">
+                            <field name="product_id" string="المنتج"/>
+                            <field name="location_id" string="من موقع"/>
+                            <field name="location_dest_id" string="إلى موقع"/>
+                            <field name="quantity" string="الكمية"/>
+                            <field name="product_uom_id" string="الوحدة"/>
+                            <field name="state" widget="badge" string="الحالة"/>
+                        </tree>
+                    </field>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Harvest Entry Search View -->
+    <record id="farm_harvest_entry_view_search" model="ir.ui.view">
+        <field name="name">farm.harvest.entry.view.search</field>
+        <field name="model">farm.harvest.entry</field>
+        <field name="arch" type="xml">
+            <search string="البحث في الحصاد">
+                <field name="name"/>
+                <field name="project_id"/>
+                <field name="house_id"/>
+                <field name="product_id"/>
+                <field name="farm_id"/>
+                <field name="sector_id"/>
+                <field name="unit_id"/>
+                <separator/>
+                <filter name="filter_today" string="اليوم" domain="[('date', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="filter_this_week" string="هذا الأسبوع" domain="[('date', '&gt;=', (context_today() - relativedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                <filter name="filter_this_month" string="هذا الشهر" domain="[('date', '&gt;=', (context_today() - relativedelta(day=1)).strftime('%Y-%m-%d'))]"/>
+                <separator/>
+                <group expand="0" string="تجميع حسب">
+                    <filter name="group_date" string="التاريخ" context="{'group_by': 'date:month'}"/>
+                    <filter name="group_project" string="المشروع" context="{'group_by': 'project_id'}"/>
+                    <filter name="group_farm" string="المزرعة" context="{'group_by': 'farm_id'}"/>
+                    <filter name="group_sector" string="القطاع" context="{'group_by': 'sector_id'}"/>
+                    <filter name="group_unit" string="الوحدة" context="{'group_by': 'unit_id'}"/>
+                    <filter name="group_house" string="البيت" context="{'group_by': 'house_id'}"/>
+                    <filter name="group_product" string="المنتج" context="{'group_by': 'product_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Harvest Entry Pivot View -->
+    <record id="farm_harvest_entry_view_pivot" model="ir.ui.view">
+        <field name="name">farm.harvest.entry.view.pivot</field>
+        <field name="model">farm.harvest.entry</field>
+        <field name="arch" type="xml">
+            <pivot string="تحليل الحصاد">
+                <field name="farm_id" type="row"/>
+                <field name="project_id" type="row"/>
+                <field name="house_id" type="row"/>
+                <field name="product_id" type="col"/>
+                <field name="quantity" type="measure"/>
+                <field name="allocated_cost" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Harvest Entry Graph View -->
+    <record id="farm_harvest_entry_view_graph" model="ir.ui.view">
+        <field name="name">farm.harvest.entry.view.graph</field>
+        <field name="model">farm.harvest.entry</field>
+        <field name="arch" type="xml">
+            <graph string="الحصاد" type="bar">
+                <field name="date" interval="month"/>
+                <field name="quantity" type="measure"/>
+                <field name="product_id"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Harvest Entry Kanban View -->
+    <record id="farm_harvest_entry_view_kanban" model="ir.ui.view">
+        <field name="name">farm.harvest.entry.view.kanban</field>
+        <field name="model">farm.harvest.entry</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile">
+                <field name="name"/>
+                <field name="date"/>
+                <field name="project_id"/>
+                <field name="house_id"/>
+                <field name="product_id"/>
+                <field name="quantity"/>
+                <field name="allocated_cost"/>
+                <field name="unit_cost"/>
+                <field name="currency_id"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_card oe_kanban_global_click">
+                            <div class="oe_kanban_content">
+                                <div class="o_kanban_record_top mb-2">
+                                    <div class="o_kanban_record_headings">
+                                        <strong class="o_kanban_record_title">
+                                            <field name="name"/>
+                                        </strong>
+                                    </div>
+                                    <span class="badge bg-primary">
+                                        <field name="date"/>
+                                    </span>
+                                </div>
+                                <div class="o_kanban_record_body">
+                                    <div><strong>المشروع:</strong> <field name="project_id"/></div>
+                                    <div><strong>البيت:</strong> <field name="house_id"/></div>
+                                    <div><strong>المنتج:</strong> <field name="product_id"/></div>
+                                </div>
+                                <div class="o_kanban_record_bottom mt-2">
+                                    <div class="oe_kanban_bottom_left">
+                                        <span class="badge bg-success">
+                                            الكمية: <field name="quantity"/>
+                                        </span>
+                                    </div>
+                                    <div class="oe_kanban_bottom_right">
+                                        <span class="badge bg-warning">
+                                            التكلفة: <field name="allocated_cost" widget="monetary"/>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Harvest Entry Action -->
+    <record id="farm_harvest_entry_action" model="ir.actions.act_window">
+        <field name="name">سجلات الحصاد</field>
+        <field name="res_model">farm.harvest.entry</field>
+        <field name="view_mode">tree,kanban,form,pivot,graph</field>
+        <field name="search_view_id" ref="farm_harvest_entry_view_search"/>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                أضف سجل حصاد جديد
+            </p>
+            <p>
+                سجل كميات الحصاد من البيوت للمشاريع قيد التنفيذ.
+                <br/>
+                سيتم احتساب تكلفة الإنتاج وزيادة المخزون تلقائياً.
+            </p>
+        </field>
+    </record>
+
+</odoo>
+
+

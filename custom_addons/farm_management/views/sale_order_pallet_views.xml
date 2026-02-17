@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ============================================================ -->
+    <!-- PALLET LINE TREE VIEW (Inline) -->
+    <!-- ============================================================ -->
+    
+    <record id="sale_order_pallet_line_view_tree" model="ir.ui.view">
+        <field name="name">sale.order.pallet.line.view.tree</field>
+        <field name="model">sale.order.pallet.line</field>
+        <field name="arch" type="xml">
+            <tree string="محتويات الباليت" editable="bottom">
+                <field name="product_id" string="المنتج" readonly="product_id" options="{'no_create': True}"/>
+                <field name="box_weight_kg" string="وزن الصندوق (كجم)"/>
+                <field name="box_quantity" string="عدد الصناديق"/>
+                <field name="subtotal_kg" string="إجمالي الوزن (كجم)" sum="المجموع"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- PALLET TREE VIEW -->
+    <!-- ============================================================ -->
+    
+    <record id="sale_order_pallet_view_tree" model="ir.ui.view">
+        <field name="name">sale.order.pallet.view.tree</field>
+        <field name="model">sale.order.pallet</field>
+        <field name="arch" type="xml">
+            <tree string="الباليتات">
+                <field name="sequence" widget="handle"/>
+                <field name="name" string="رقم الباليت"/>
+                <field name="order_id" string="طلب المبيعات" optional="hide"/>
+                <field name="partner_id" string="العميل" optional="show"/>
+                <field name="total_boxes" string="عدد الصناديق" sum="المجموع"/>
+                <field name="total_kg" string="إجمالي الوزن (كجم)" sum="المجموع"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- PALLET FORM VIEW -->
+    <!-- ============================================================ -->
+    
+    <record id="sale_order_pallet_view_form" model="ir.ui.view">
+        <field name="name">sale.order.pallet.view.form</field>
+        <field name="model">sale.order.pallet</field>
+        <field name="arch" type="xml">
+            <form string="باليت">
+                <header>
+                    <button name="action_print_label" type="object" string="طباعة الملصق" 
+                            class="oe_highlight" icon="fa-print"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="معلومات الباليت">
+                            <field name="order_id" string="طلب المبيعات" readonly="1" 
+                                   options="{'no_create': True}"/>
+                            <field name="partner_id" string="العميل" readonly="1"/>
+                            <field name="sequence" string="الترتيب"/>
+                        </group>
+                        <group string="الإجماليات">
+                            <field name="total_boxes" string="عدد الصناديق"/>
+                            <field name="total_kg" string="إجمالي الوزن (كجم)"/>
+                        </group>
+                    </group>
+                    
+                    <!-- Hidden field for product domain -->
+                    <field name="available_product_ids" invisible="1"/>
+                    
+                    <notebook>
+                        <page string="محتويات الباليت" name="contents">
+                            <field name="line_ids" nolabel="1">
+                                <tree string="الصناديق" editable="bottom" 
+                                      decoration-success="is_complete and not is_over"
+                                      decoration-danger="is_over"
+                                      decoration-warning="not is_complete and progress_percent > 0">
+                                    <field name="product_id" string="المنتج" 
+                                           domain="[('id', 'in', parent.available_product_ids)]"
+                                           readonly="product_id"
+                                           options="{'no_create': True}"/>
+                                    <field name="box_weight_kg" string="وزن الصندوق (كجم)"/>
+                                    <field name="box_quantity" string="عدد الصناديق"/>
+                                    <field name="subtotal_kg" string="إجمالي الوزن (كجم)" sum="المجموع"/>
+                                    <field name="ordered_qty" string="المطلوب" readonly="1"/>
+                                    <field name="palletized_qty" string="المعبأ" readonly="1"/>
+                                    <field name="remaining_qty" string="المتبقي" readonly="1" 
+                                           decoration-success="remaining_qty == 0"
+                                           decoration-danger="remaining_qty &lt; 0"/>
+                                    <field name="progress_percent" string="%" widget="progressbar" readonly="1"/>
+                                    <field name="is_complete" column_invisible="1"/>
+                                    <field name="is_over" column_invisible="1"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- SALE ORDER FORM EXTENSION -->
+    <!-- ============================================================ -->
+    
+    <record id="sale_order_view_form_pallet" model="ir.ui.view">
+        <field name="name">sale.order.view.form.pallet</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <!-- Add smart button for pallets -->
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_pallets" type="object" class="oe_stat_button" 
+                        icon="fa-cubes" invisible="pallet_count == 0">
+                    <field name="pallet_count" widget="statinfo" string="باليتات"/>
+                </button>
+            </xpath>
+            
+            <!-- Add Pallets notebook page -->
+            <xpath expr="//page[@name='order_lines']" position="after">
+                <page string="الباليتات" name="pallets">
+                    <group>
+                        <group>
+                            <field name="total_pallet_boxes" string="إجمالي الصناديق" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="total_pallet_kg" string="إجمالي الوزن (كجم)" readonly="1"/>
+                        </group>
+                    </group>
+                    <div class="mb-3">
+                        <button name="action_add_pallet" type="object" string="إضافة باليت" 
+                                class="btn-primary" icon="fa-plus"/>
+                        <button name="action_print_all_pallet_labels" type="object" 
+                                string="طباعة جميع الملصقات" 
+                                class="btn-secondary ms-2" icon="fa-print"
+                                invisible="pallet_count == 0"/>
+                    </div>
+                    <field name="pallet_ids" nolabel="1">
+                        <tree string="الباليتات" editable="bottom" create="false">
+                            <field name="sequence" widget="handle"/>
+                            <field name="name" string="رقم الباليت" readonly="1"/>
+                            <field name="total_boxes" string="عدد الصناديق" readonly="1"/>
+                            <field name="total_kg" string="إجمالي الوزن (كجم)" readonly="1" sum="المجموع"/>
+                            <button name="action_print_label" type="object" string="طباعة" 
+                                    icon="fa-print" class="btn-link"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- PALLET ACTIONS -->
+    <!-- ============================================================ -->
+    
+    <record id="action_sale_order_pallet" model="ir.actions.act_window">
+        <field name="name">باليتات المبيعات</field>
+        <field name="res_model">sale.order.pallet</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                لا توجد باليتات
+            </p>
+            <p>
+                يمكنك إنشاء باليتات من خلال طلبات المبيعات
+            </p>
+        </field>
+    </record>
+
+</odoo>
+

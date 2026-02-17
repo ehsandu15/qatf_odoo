@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ============================================================ -->
+    <!-- PARTNER PRODUCT CODE VIEWS -->
+    <!-- ============================================================ -->
+    
+    <!-- Product Code Tree View -->
+    <record id="view_res_partner_product_code_tree" model="ir.ui.view">
+        <field name="name">res.partner.product.code.tree</field>
+        <field name="model">res.partner.product.code</field>
+        <field name="arch" type="xml">
+            <tree string="رموز المنتجات المخصصة" editable="bottom">
+                <field name="product_id"/>
+                <field name="product_default_code"/>
+                <field name="custom_code"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Product Code Form View -->
+    <record id="view_res_partner_product_code_form" model="ir.ui.view">
+        <field name="name">res.partner.product.code.form</field>
+        <field name="model">res.partner.product.code</field>
+        <field name="arch" type="xml">
+            <form string="رمز منتج مخصص">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="partner_id" invisible="context.get('default_partner_id')"/>
+                            <field name="product_id"/>
+                        </group>
+                        <group>
+                            <field name="product_default_code"/>
+                            <field name="custom_code"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- EXTEND RES.PARTNER FORM VIEW -->
+    <!-- ============================================================ -->
+    
+    <record id="view_partner_form_product_codes" model="ir.ui.view">
+        <field name="name">res.partner.form.product.codes</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <!-- Add Smart Button -->
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_product_codes" 
+                        type="object" 
+                        class="oe_stat_button" 
+                        icon="fa-barcode"
+                        invisible="not is_company and parent_id">
+                    <field name="product_code_count" widget="statinfo" string="رموز المنتجات"/>
+                </button>
+            </xpath>
+            
+            <!-- Add Product Codes Tab -->
+            <xpath expr="//page[@name='sales_purchases']" position="after">
+                <page string="رموز المنتجات" name="product_codes" invisible="not is_company and parent_id">
+                    <group>
+                        <group>
+                            <p class="oe_grey">
+                                حدد رموز الباركود المخصصة لهذا العميل. عند طباعة ملصقات الباليت، 
+                                سيتم استخدام الرمز المخصص بدلاً من الرمز الأصلي للمنتج.
+                            </p>
+                        </group>
+                    </group>
+                    <field name="product_code_ids" context="{'default_partner_id': active_id}">
+                        <tree string="رموز المنتجات" editable="bottom">
+                            <field name="product_id"/>
+                            <field name="product_default_code"/>
+                            <field name="custom_code"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
+
+

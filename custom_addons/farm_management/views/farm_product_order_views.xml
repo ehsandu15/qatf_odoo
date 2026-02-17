@@ -1,0 +1,374 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ============================================================ -->
+    <!-- PRODUCT ORDER VIEWS -->
+    <!-- ============================================================ -->
+    
+    <!-- Order Tree View -->
+    <record id="farm_product_order_view_tree" model="ir.ui.view">
+        <field name="name">farm.product.order.view.tree</field>
+        <field name="model">farm.product.order</field>
+        <field name="arch" type="xml">
+            <tree string="طلبات المنتجات" decoration-muted="state == 'cancelled'" decoration-success="state == 'done'" decoration-info="state == 'draft'">
+                <field name="name" string="رقم الطلب"/>
+                <field name="is_direct_order" string="مباشر" widget="boolean"/>
+                <field name="request_date" string="تاريخ الطلب"/>
+                <field name="project_id" string="المشروع"/>
+                <field name="farm_id" string="المزرعة"/>
+                <field name="requester_id" string="مقدم الطلب" widget="many2one_avatar_user"/>
+                <field name="line_count" string="عدد البنود"/>
+                <field name="total_amount" string="الإجمالي" sum="المجموع"/>
+                <field name="state" string="الحالة" widget="badge" 
+                       decoration-info="state == 'draft'"
+                       decoration-warning="state in ['owner_approval', 'inventory_approval', 'accounting_approval']"
+                       decoration-success="state == 'done'"
+                       decoration-danger="state == 'cancelled'"/>
+                <field name="currency_id" column_invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Order Kanban View (Pipeline) -->
+    <record id="farm_product_order_view_kanban" model="ir.ui.view">
+        <field name="name">farm.product.order.view.kanban</field>
+        <field name="model">farm.product.order</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" class="o_kanban_mobile">
+                <field name="name"/>
+                <field name="request_date"/>
+                <field name="project_id"/>
+                <field name="farm_id"/>
+                <field name="requester_id"/>
+                <field name="line_count"/>
+                <field name="total_amount"/>
+                <field name="state"/>
+                <field name="currency_id"/>
+                <field name="is_direct_order"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_card oe_kanban_global_click">
+                            <div class="oe_kanban_content">
+                                <div class="o_kanban_record_top mb-2">
+                                    <div class="o_kanban_record_headings">
+                                        <strong class="o_kanban_record_title">
+                                            <field name="name"/>
+                                        </strong>
+                                        <t t-if="record.is_direct_order.raw_value">
+                                            <span class="badge bg-warning ms-1">مباشر</span>
+                                        </t>
+                                    </div>
+                                    <span class="badge bg-primary">
+                                        <field name="request_date"/>
+                                    </span>
+                                </div>
+                                <div class="o_kanban_record_body">
+                                    <div><strong>المشروع:</strong> <field name="project_id"/></div>
+                                    <div><strong>المزرعة:</strong> <field name="farm_id"/></div>
+                                    <div><strong>مقدم الطلب:</strong> <field name="requester_id"/></div>
+                                    <div><strong>عدد البنود:</strong> <field name="line_count"/></div>
+                                </div>
+                                <div class="o_kanban_record_bottom mt-2">
+                                    <div class="oe_kanban_bottom_left">
+                                        <field name="requester_id" widget="many2one_avatar_user"/>
+                                    </div>
+                                    <div class="oe_kanban_bottom_right">
+                                        <span class="badge bg-success">
+                                            <field name="total_amount" widget="monetary"/>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Order Form View -->
+    <record id="farm_product_order_view_form" model="ir.ui.view">
+        <field name="name">farm.product.order.view.form</field>
+        <field name="model">farm.product.order</field>
+        <field name="arch" type="xml">
+            <form string="طلب منتجات">
+                <header>
+                    <button name="action_submit" type="object" string="إرسال للموافقة" 
+                            class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_owner_approve" type="object" string="موافقة المالك" 
+                            class="oe_highlight" invisible="state != 'owner_approval'"
+                            groups="farm_management.group_farm_manager"/>
+                    <button name="action_inventory_approve" type="object" string="موافقة المخزون" 
+                            class="oe_highlight" invisible="state != 'inventory_approval'"
+                            groups="stock.group_stock_manager"/>
+                    <button name="action_accounting_approve" type="object" string="موافقة المحاسبة" 
+                            class="oe_highlight" invisible="state != 'accounting_approval' or (is_direct_order and not move_id)"
+                            groups="account.group_account_manager"/>
+                    <button name="action_cancel" type="object" string="إلغاء" 
+                            invisible="state in ['done', 'cancelled']"
+                            confirm="هل أنت متأكد من إلغاء هذا الطلب؟"/>
+                    <button name="action_reset_to_draft" type="object" string="إعادة للمسودة" 
+                            invisible="state != 'cancelled'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,owner_approval,inventory_approval,accounting_approval,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_pickings" type="object" class="oe_stat_button" 
+                                icon="fa-truck" invisible="picking_count == 0">
+                            <field name="picking_count" widget="statinfo" string="عمليات النقل"/>
+                        </button>
+                        <button name="action_view_accounting_entry" type="object" class="oe_stat_button" 
+                                icon="fa-file-text-o" invisible="not move_id">
+                            <span class="o_stat_text">القيد المحاسبي</span>
+                        </button>
+                        <button name="action_view_costs" type="object" class="oe_stat_button" 
+                                icon="fa-money" invisible="state != 'done'">
+                            <span class="o_stat_text">التكاليف</span>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="ملغي" bg_color="bg-danger" invisible="state != 'cancelled'"/>
+                    <widget name="web_ribbon" title="منتهي" bg_color="bg-success" invisible="state != 'done'"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="بيانات الطلب">
+                            <field name="project_id" string="المشروع" readonly="state != 'draft'" 
+                                   options="{'no_create': True}"/>
+                            <field name="farm_id" string="المزرعة" readonly="1"/>
+                            <field name="requester_id" string="مقدم الطلب"/>
+                            <field name="request_date" string="تاريخ الطلب" readonly="state != 'draft'"/>
+                            <field name="is_direct_order" string="طلب مباشر" readonly="state != 'draft'"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="move_id" string="القيد المحاسبي" 
+                                   invisible="not is_direct_order and not move_id"
+                                   readonly="not is_direct_order or state not in ['accounting_approval', 'done']"
+                                   options="{'no_create': False}"/>
+                        </group>
+                        <group string="الإجماليات">
+                            <field name="line_count" string="عدد البنود"/>
+                            <field name="total_amount" string="إجمالي المبلغ"/>
+                        </group>
+                    </group>
+                    
+                    <!-- Hidden fields for available sources -->
+                    <field name="available_sector_ids" invisible="1"/>
+                    <field name="available_unit_ids" invisible="1"/>
+                    <field name="available_house_ids" invisible="1"/>
+                    
+                    <!-- Target Selection -->
+                    <group string="الوجهة المستهدفة" invisible="not project_id">
+                        <group>
+                            <field name="target_sector_ids" 
+                                   string="القطاعات"
+                                   widget="many2many_tags"
+                                   readonly="state != 'draft'"
+                                   domain="[('id', 'in', available_sector_ids)]"
+                                   options="{'no_create': True}"/>
+                            <field name="target_unit_ids" 
+                                   string="الوحدات"
+                                   widget="many2many_tags"
+                                   readonly="state != 'draft'"
+                                   domain="[('id', 'in', available_unit_ids)]"
+                                   options="{'no_create': True}"/>
+                        </group>
+                        <group>
+                            <field name="target_house_ids" 
+                                   string="البيوت"
+                                   widget="many2many_tags"
+                                   readonly="state != 'draft'"
+                                   domain="[('id', 'in', available_house_ids)]"
+                                   options="{'no_create': True}"/>
+                        </group>
+                    </group>
+                    
+                    <div class="alert alert-info" role="alert" invisible="not project_id or state != 'draft'">
+                        <i class="fa fa-info-circle"/> اختر القطاعات أو الوحدات أو البيوت التي تريد توجيه الطلب إليها، ثم أضف المنتجات المطلوبة.
+                    </div>
+                    
+                    <notebook>
+                        <page string="بنود الطلب" name="order_lines">
+                            <field name="line_ids" readonly="state != 'draft'">
+                                <tree string="بنود الطلب" editable="bottom">
+                                    <field name="product_id" string="المنتج" 
+                                           readonly="product_id"
+                                           options="{'no_create': True}"/>
+                                    <field name="quantity" string="الكمية"/>
+                                    <field name="uom_id" string="الوحدة"/>
+                                    <field name="available_qty" string="الكمية المتاحة"/>
+                                    <field name="is_available" string="متاح" widget="boolean_toggle"/>
+                                    <field name="unit_price" string="سعر الوحدة"/>
+                                    <field name="subtotal" string="المجموع" sum="الإجمالي"/>
+                                    <field name="justification" string="المبرر" required="1"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                </tree>
+                            </field>
+                            <group class="oe_subtotal_footer">
+                                <field name="total_amount" string="الإجمالي" class="oe_subtotal_footer_separator"/>
+                            </group>
+                        </page>
+                        <page string="ملاحظات" name="notes">
+                            <field name="notes" nolabel="1" placeholder="ملاحظات عامة على الطلب..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Order Search View -->
+    <record id="farm_product_order_view_search" model="ir.ui.view">
+        <field name="name">farm.product.order.view.search</field>
+        <field name="model">farm.product.order</field>
+        <field name="arch" type="xml">
+            <search string="البحث في الطلبات">
+                <field name="name"/>
+                <field name="project_id"/>
+                <field name="farm_id"/>
+                <field name="requester_id"/>
+                <separator/>
+                <filter name="filter_draft" string="مسودة" domain="[('state', '=', 'draft')]"/>
+                <filter name="filter_owner_approval" string="موافقة المالك" domain="[('state', '=', 'owner_approval')]"/>
+                <filter name="filter_inventory_approval" string="موافقة المخزون" domain="[('state', '=', 'inventory_approval')]"/>
+                <filter name="filter_accounting_approval" string="موافقة المحاسبة" domain="[('state', '=', 'accounting_approval')]"/>
+                <filter name="filter_done" string="منتهي" domain="[('state', '=', 'done')]"/>
+                <filter name="filter_cancelled" string="ملغي" domain="[('state', '=', 'cancelled')]"/>
+                <separator/>
+                <filter name="filter_my_orders" string="طلباتي" domain="[('requester_id', '=', uid)]"/>
+                <filter name="filter_direct_orders" string="طلبات مباشرة" domain="[('is_direct_order', '=', True)]"/>
+                <separator/>
+                <group expand="0" string="تجميع حسب">
+                    <filter name="group_state" string="الحالة" context="{'group_by': 'state'}"/>
+                    <filter name="group_project" string="المشروع" context="{'group_by': 'project_id'}"/>
+                    <filter name="group_farm" string="المزرعة" context="{'group_by': 'farm_id'}"/>
+                    <filter name="group_requester" string="مقدم الطلب" context="{'group_by': 'requester_id'}"/>
+                    <filter name="group_date" string="التاريخ" context="{'group_by': 'request_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Order Action (Main) -->
+    <record id="farm_product_order_action" model="ir.actions.act_window">
+        <field name="name">طلبات المنتجات</field>
+        <field name="res_model">farm.product.order</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="search_view_id" ref="farm_product_order_view_search"/>
+        <field name="context">{'search_default_group_state': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                أنشئ طلب منتجات جديد
+            </p>
+            <p>
+                يمكنك طلب منتجات للمزرعة وسيتم إرسالها للموافقة عبر سلسلة من المراحل.
+            </p>
+        </field>
+    </record>
+
+    <!-- Order Action (List View) -->
+    <record id="farm_product_order_list_action" model="ir.actions.act_window">
+        <field name="name">قائمة الطلبات</field>
+        <field name="res_model">farm.product.order</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="farm_product_order_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                أنشئ طلب منتجات جديد
+            </p>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- ORDER LINE VIEWS -->
+    <!-- ============================================================ -->
+    
+    <!-- Order Line Tree View -->
+    <record id="farm_product_order_line_view_tree" model="ir.ui.view">
+        <field name="name">farm.product.order.line.view.tree</field>
+        <field name="model">farm.product.order.line</field>
+        <field name="arch" type="xml">
+            <tree string="بنود الطلبات">
+                <field name="order_id" string="الطلب"/>
+                <field name="order_state" string="حالة الطلب" widget="badge"/>
+                <field name="product_id" string="المنتج"/>
+                <field name="quantity" string="الكمية"/>
+                <field name="uom_id" string="الوحدة"/>
+                <field name="available_qty" string="المتاح"/>
+                <field name="is_available" string="متاح" widget="boolean"/>
+                <field name="unit_price" string="السعر"/>
+                <field name="subtotal" string="المجموع" sum="الإجمالي"/>
+                <field name="justification" string="المبرر"/>
+                <field name="currency_id" column_invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Order Line Search View -->
+    <record id="farm_product_order_line_view_search" model="ir.ui.view">
+        <field name="name">farm.product.order.line.view.search</field>
+        <field name="model">farm.product.order.line</field>
+        <field name="arch" type="xml">
+            <search string="البحث في بنود الطلبات">
+                <field name="order_id"/>
+                <field name="product_id"/>
+                <separator/>
+                <group expand="0" string="تجميع حسب">
+                    <filter name="group_order" string="الطلب" context="{'group_by': 'order_id'}"/>
+                    <filter name="group_product" string="المنتج" context="{'group_by': 'product_id'}"/>
+                    <filter name="group_state" string="حالة الطلب" context="{'group_by': 'order_state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Order Line Action -->
+    <record id="farm_product_order_line_action" model="ir.actions.act_window">
+        <field name="name">تفاصيل الطلبات</field>
+        <field name="res_model">farm.product.order.line</field>
+        <field name="view_mode">tree</field>
+        <field name="search_view_id" ref="farm_product_order_line_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                لا توجد بنود طلبات
+            </p>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- PRODUCT TEMPLATE VIEW EXTENSION -->
+    <!-- ============================================================ -->
+    
+    <record id="product_template_form_view_farm_order" model="ir.ui.view">
+        <field name="name">product.template.form.farm.order</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='invoicing']" position="after">
+                <page string="إدارة المزارع" name="farm_management" groups="farm_management.group_farm_user">
+                    <group string="إعدادات الطلبات">
+                        <group>
+                            <field name="can_be_ordered" string="قابل للطلب" widget="boolean_toggle"/>
+                        </group>
+                    </group>
+                    <group string="حسابات طلبات المنتجات" invisible="not can_be_ordered">
+                        <group>
+                            <field name="order_account_source" string="حساب المصدر (مدين)"/>
+                        </group>
+                        <group>
+                            <field name="order_account_destination" string="حساب الوجهة (دائن)"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
+

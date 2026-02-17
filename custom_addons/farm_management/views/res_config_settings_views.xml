@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_farm" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.farm</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="50"/>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="إدارة المزارع" string="إدارة المزارع" name="farm_management" logo="/farm_management/static/description/icon.png">
+                    <block title="إعدادات المنتجات" name="farm_product_settings">
+                        <setting id="farm_produce_code_setting" 
+                                 string="نمط رمز المنتجات الزراعية"
+                                 help="حدد نمط Regex لتحديد المنتجات الزراعية حسب رمز المنتج">
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label for="farm_produce_code_regex" class="col-lg-3 o_light_label"/>
+                                    <field name="farm_produce_code_regex" class="col-lg-4"/>
+                                </div>
+                                <div class="text-muted mt-2">
+                                    <strong>أمثلة:</strong>
+                                    <ul class="mb-0">
+                                        <li><code>^70</code> - المنتجات التي تبدأ بـ 70</li>
+                                        <li><code>^7[0-9]</code> - المنتجات التي تبدأ بـ 7 متبوعة برقم</li>
+                                        <li><code>^(70|71|72)</code> - المنتجات التي تبدأ بـ 70 أو 71 أو 72</li>
+                                        <li><code>.*PROD.*</code> - المنتجات التي تحتوي على PROD</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                    <block title="إعدادات الحصاد والمخزون" name="farm_harvest_settings">
+                        <setting id="farm_harvest_location_setting" 
+                                 string="مواقع حركة الحصاد"
+                                 help="حدد مواقع المخزون لحركات الحصاد">
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label for="farm_harvest_source_location_id" class="col-lg-4 o_light_label"/>
+                                    <field name="farm_harvest_source_location_id" class="col-lg-6" 
+                                           placeholder="موقع الإنتاج (Production)"/>
+                                </div>
+                                <div class="row mt8">
+                                    <label for="farm_harvest_dest_location_id" class="col-lg-4 o_light_label"/>
+                                    <field name="farm_harvest_dest_location_id" class="col-lg-6"
+                                           placeholder="موقع المخزون (Stock)"/>
+                                </div>
+                                <div class="text-muted mt-2">
+                                    <p class="mb-0">
+                                        <i class="fa fa-info-circle"/> إذا تركت الحقول فارغة، سيتم استخدام موقع الإنتاج الافتراضي كمصدر ومخزون المستودع الرئيسي كوجهة.
+                                    </p>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                    <block title="إعدادات طلبات المنتجات" name="farm_order_settings">
+                        <setting id="farm_order_location_setting" 
+                                 string="موقع وجهة طلبات المنتجات"
+                                 help="حدد الموقع الذي سيتم نقل المنتجات إليه عند الموافقة على الطلب من قبل المخزون">
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label for="farm_order_dest_location_id" class="col-lg-4 o_light_label"/>
+                                    <field name="farm_order_dest_location_id" class="col-lg-6"
+                                           placeholder="موقع الوجهة للطلبات"/>
+                                </div>
+                                <div class="text-muted mt-2">
+                                    <p class="mb-0">
+                                        <i class="fa fa-info-circle"/> عند موافقة المخزون على طلب المنتجات، سيتم إنشاء حركة مخزون من موقع المنتج الافتراضي إلى هذا الموقع.
+                                    </p>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_farm_config_settings" model="ir.actions.act_window">
+        <field name="name">إعدادات إدارة المزارع</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+        <field name="context">{'module': 'farm_management', 'bin_size': False}</field>
+    </record>
+</odoo>
+

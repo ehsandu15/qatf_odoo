@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Extend Account Form View -->
+    <record id="view_account_form_inherit_farm" model="ir.ui.view">
+        <field name="name">account.account.form.inherit.farm</field>
+        <field name="model">account.account</field>
+        <field name="inherit_id" ref="account.view_account_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='deprecated']" position="after">
+                <separator string="تصنيف تكاليف المزارع"/>
+                <field name="is_direct_cost"/>
+                <field name="is_indirect_cost"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Extend Account Tree View -->
+    <record id="view_account_list_inherit_farm" model="ir.ui.view">
+        <field name="name">account.account.list.inherit.farm</field>
+        <field name="model">account.account</field>
+        <field name="inherit_id" ref="account.view_account_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='internal_group']" position="after">
+                <field name="is_direct_cost" optional="hide" string="مباشر"/>
+                <field name="is_indirect_cost" optional="hide" string="غير مباشر"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Extend Account Search View -->
+    <record id="view_account_search_inherit_farm" model="ir.ui.view">
+        <field name="name">account.account.search.inherit.farm</field>
+        <field name="model">account.account</field>
+        <field name="inherit_id" ref="account.view_account_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <separator/>
+                <filter name="filter_direct_cost" string="تكاليف مباشرة للمزارع" domain="[('is_direct_cost', '=', True)]"/>
+                <filter name="filter_indirect_cost" string="تكاليف غير مباشرة للمزارع" domain="[('is_indirect_cost', '=', True)]"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

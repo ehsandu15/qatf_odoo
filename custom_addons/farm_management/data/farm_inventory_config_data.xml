@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        <!-- ============================================== -->
+        <!-- Product Colors (Manual Configuration)         -->
+        <!-- ============================================== -->
+        
+        <record id="product_color_10" model="farm.product.color">
+            <field name="name">احمر</field>
+            <field name="code">10</field>
+            <field name="html_color">#FF0000</field>
+        </record>
+        
+        <record id="product_color_20" model="farm.product.color">
+            <field name="name">اخضر</field>
+            <field name="code">20</field>
+            <field name="html_color">#00FF00</field>
+        </record>
+        
+        <record id="product_color_30" model="farm.product.color">
+            <field name="name">اصفر</field>
+            <field name="code">30</field>
+            <field name="html_color">#FFFF00</field>
+        </record>
+        
+        <record id="product_color_40" model="farm.product.color">
+            <field name="name">برتقالي</field>
+            <field name="code">40</field>
+            <field name="html_color">#FFA500</field>
+        </record>
+        
+        <record id="product_color_50" model="farm.product.color">
+            <field name="name">اسود</field>
+            <field name="code">50</field>
+            <field name="html_color">#000000</field>
+        </record>
+        
+    </data>
+</odoo>

@@ -1,0 +1,136 @@
+/* Farm Management - Timeline Styles */
+
+/* Status Timeline styling */
+.o_farm_timeline {
+    position: relative;
+    padding: 20px 0;
+}
+
+.o_farm_timeline::before {
+    content: '';
+    position: absolute;
+    right: 30px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #dee2e6;
+}
+
+.o_farm_timeline_item {
+    position: relative;
+    padding-right: 60px;
+    margin-bottom: 20px;
+}
+
+.o_farm_timeline_item::before {
+    content: '';
+    position: absolute;
+    right: 24px;
+    top: 5px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #007bff;
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 2px #007bff;
+}
+
+.o_farm_timeline_item.status_draft::before {
+    background: #6c757d;
+    box-shadow: 0 0 0 2px #6c757d;
+}
+
+.o_farm_timeline_item.status_in_progress::before {
+    background: #28a745;
+    box-shadow: 0 0 0 2px #28a745;
+}
+
+.o_farm_timeline_item.status_paused::before {
+    background: #ffc107;
+    box-shadow: 0 0 0 2px #ffc107;
+}
+
+.o_farm_timeline_item.status_completed::before {
+    background: #007bff;
+    box-shadow: 0 0 0 2px #007bff;
+}
+
+.o_farm_timeline_item.status_cancelled::before {
+    background: #dc3545;
+    box-shadow: 0 0 0 2px #dc3545;
+}
+
+/* Status badges */
+.badge.bg-draft {
+    background-color: #6c757d !important;
+}
+
+.badge.bg-in_progress {
+    background-color: #28a745 !important;
+}
+
+.badge.bg-paused {
+    background-color: #ffc107 !important;
+    color: #212529 !important;
+}
+
+.badge.bg-completed {
+    background-color: #007bff !important;
+}
+
+.badge.bg-cancelled {
+    background-color: #dc3545 !important;
+}
+
+/* Cost type badges */
+.badge.cost-direct {
+    background-color: #17a2b8 !important;
+}
+
+.badge.cost-indirect {
+    background-color: #fd7e14 !important;
+}
+
+/* Dashboard stats cards */
+.o_farm_stat_card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 10px;
+    padding: 20px;
+    color: white;
+    margin-bottom: 15px;
+}
+
+.o_farm_stat_card.direct {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+}
+
+.o_farm_stat_card.indirect {
+    background: linear-gradient(135deg, #ee0979 0%, #ff6a00 100%);
+}
+
+.o_farm_stat_card .stat-value {
+    font-size: 2em;
+    font-weight: bold;
+}
+
+.o_farm_stat_card .stat-label {
+    opacity: 0.8;
+    font-size: 0.9em;
+}
+
+/* RTL Support for Arabic */
+html[dir="rtl"] .o_farm_timeline::before {
+    right: auto;
+    left: 30px;
+}
+
+html[dir="rtl"] .o_farm_timeline_item {
+    padding-right: 0;
+    padding-left: 60px;
+}
+
+html[dir="rtl"] .o_farm_timeline_item::before {
+    right: auto;
+    left: 24px;
+}
+

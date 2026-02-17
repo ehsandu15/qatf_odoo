@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Product Quick Add Wizard Form View -->
+    <record id="view_product_quick_add_wizard_form" model="ir.ui.view">
+        <field name="name">product.quick.add.wizard.form</field>
+        <field name="model">product.quick.add.wizard</field>
+        <field name="arch" type="xml">
+            <form string="إضافة منتج سريع">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="generated_code" string="الرمز المولد:"/>
+                        <h1>
+                            <field name="generated_code" readonly="1" class="oe_inline" 
+                                   style="font-size: 28px; font-weight: bold; color: #875A7B;"
+                                   placeholder="سيتم توليده تلقائياً..."/>
+                        </h1>
+                    </div>
+                    
+                    <group string="تكوين الرمز" col="4">
+                        <field name="warehouse_id" 
+                               options="{'no_create': True}"
+                               placeholder="اختر المستودع..."/>
+                        <field name="inventory_code" readonly="1" string="رمز المستودع"/>
+                        <field name="category_id"
+                               options="{'no_create': True}"
+                               placeholder="اختر التصنيف..."/>
+                        <field name="category_code" readonly="1" string="رمز التصنيف"/>
+                        <field name="color_id"
+                               options="{'no_create': True}"
+                               placeholder="اختر اللون..."/>
+                        <field name="color_code" readonly="1" string="رمز اللون"/>
+                        <field name="next_sequence" readonly="1" string="الرقم التالي"/>
+                    </group>
+                    
+                    <group string="معلومات المنتج">
+                        <group>
+                            <field name="name" placeholder="اسم المنتج بالعربية..."/>
+                            <field name="name_en" placeholder="Product name in English..."/>
+                        </group>
+                        <group>
+                            <field name="uom_id"/>
+                            <field name="list_price"/>
+                            <field name="standard_price"/>
+                        </group>
+                    </group>
+                    
+                    <group string="الوصف">
+                        <field name="description" nolabel="1" placeholder="وصف إضافي للمنتج..."/>
+                    </group>
+                </sheet>
+                
+                <footer>
+                    <button name="action_create_product" 
+                            string="إنشاء المنتج" 
+                            type="object" 
+                            class="btn-primary"
+                            invisible="not generated_code"/>
+                    <button name="action_create_and_new" 
+                            string="إنشاء وجديد" 
+                            type="object" 
+                            class="btn-secondary"
+                            invisible="not generated_code"/>
+                    <button string="إلغاء" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action to open the wizard -->
+    <record id="action_product_quick_add_wizard" model="ir.actions.act_window">
+        <field name="name">إضافة منتج سريع</field>
+        <field name="res_model">product.quick.add.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="view_product_quick_add_wizard_form"/>
+    </record>
+
+</odoo>

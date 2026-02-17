@@ -1,0 +1,27 @@
+id,name,default_code,detailed_type,categ_id/id,uom_id/id,uom_po_id/id,sale_ok,purchase_ok
+__import__.product_tomato,طماطم,70001001,product,product.product_category_all,uom.product_uom_kgm,uom.product_uom_kgm,True,True
+__import__.product_cucumber,خيار,70001002,product,product.product_category_all,uom.product_uom_kgm,uom.product_uom_kgm,True,True
+__import__.product_pepper_green,فلفل أخضر,70001003,product,product.product_category_all,uom.product_uom_kgm,uom.product_uom_kgm,True,True
+__import__.product_pepper_red,فلفل أحمر,70001004,product,product.product_category_all,uom.product_uom_kgm,uom.product_uom_kgm,True,True
+__import__.product_pepper_yellow,فلفل أصفر,70001005,product,product.product_category_all,uom.product_uom_kgm,uom.product_uom_kgm,True,True
+__import__.product_eggplant,باذنجان,70001006,product,product.product_category_all,uom.product_uom_kgm,uom.product_uom_kgm,True,True
+__import__.product_zucchini,كوسا,70001007,product,product.product_category_all,uom.product_uom_kgm,uom.product_uom_kgm,True,True
+__import__.product_lettuce,خس,70001008,product,product.product_category_all,uom.product_uom_kgm,uom.product_uom_kgm,True,True
+__import__.product_cabbage,ملفوف,70001009,product,product.product_category_all,uom.product_uom_kgm,uom.product_uom_kgm,True,True
+__import__.product_carrot,جزر,70001010,product,product.product_category_all,uom.product_uom_kgm,uom.product_uom_kgm,True,True
+__import__.product_onion,بصل,70001011,product,product.product_category_all,uom.product_uom_kgm,uom.product_uom_kgm,True,True
+__import__.product_garlic,ثوم,70001012,product,product.product_category_all,uom.product_uom_kgm,uom.product_uom_kgm,True,True
+__import__.product_potato,بطاطس,70001013,product,product.product_category_all,uom.product_uom_kgm,uom.product_uom_kgm,True,True
+__import__.product_beans,فاصوليا,70001014,product,product.product_category_all,uom.product_uom_kgm,uom.product_uom_kgm,True,True
+__import__.product_peas,بازلاء,70001015,product,product.product_category_all,uom.product_uom_kgm,uom.product_uom_kgm,True,True
+__import__.product_spinach,سبانخ,70001016,product,product.product_category_all,uom.product_uom_kgm,uom.product_uom_kgm,True,True
+__import__.product_parsley,بقدونس,70001017,product,product.product_category_all,uom.product_uom_kgm,uom.product_uom_kgm,True,True
+__import__.product_mint,نعناع,70001018,product,product.product_category_all,uom.product_uom_kgm,uom.product_uom_kgm,True,True
+__import__.product_coriander,كزبرة,70001019,product,product.product_category_all,uom.product_uom_kgm,uom.product_uom_kgm,True,True
+__import__.product_radish,فجل,70001020,product,product.product_category_all,uom.product_uom_kgm,uom.product_uom_kgm,True,True
+__import__.product_strawberry,فراولة,70002001,product,product.product_category_all,uom.product_uom_kgm,uom.product_uom_kgm,True,True
+__import__.product_watermelon,بطيخ,70002002,product,product.product_category_all,uom.product_uom_kgm,uom.product_uom_kgm,True,True
+__import__.product_melon,شمام,70002003,product,product.product_category_all,uom.product_uom_kgm,uom.product_uom_kgm,True,True
+__import__.product_grape,عنب,70002004,product,product.product_category_all,uom.product_uom_kgm,uom.product_uom_kgm,True,True
+__import__.product_date,تمر,70002005,product,product.product_category_all,uom.product_uom_kgm,uom.product_uom_kgm,True,True
+

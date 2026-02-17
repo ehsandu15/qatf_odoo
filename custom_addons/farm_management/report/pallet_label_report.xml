@@ -1,0 +1,651 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ============================================================ -->
+    <!-- THERMAL LABEL PAPER FORMAT (Roll Printer) -->
+    <!-- ============================================================ -->
+    
+    <record id="paperformat_pallet_label" model="report.paperformat">
+        <field name="name">ملصق باليت (حراري)</field>
+        <field name="default" eval="False"/>
+        <field name="format">custom</field>
+        <!-- Roll width 100mm -->
+        <field name="page_width">100</field>
+        <!-- Large height to avoid page breaks within content -->
+        <field name="page_height">2000</field>
+        <field name="orientation">Portrait</field>
+        <!-- Minimal margins -->
+        <field name="margin_top">2</field>
+        <field name="margin_bottom">2</field>
+        <field name="margin_left">2</field>
+        <field name="margin_right">2</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+        <!-- Higher DPI for better quality -->
+        <field name="dpi">150</field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- PALLET LABEL REPORT ACTION -->
+    <!-- ============================================================ -->
+    
+    <record id="action_report_pallet_label" model="ir.actions.report">
+        <field name="name">ملصق الباليت</field>
+        <field name="model">sale.order.pallet</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">farm_management.report_pallet_label</field>
+        <field name="report_file">farm_management.report_pallet_label</field>
+        <field name="paperformat_id" ref="paperformat_pallet_label"/>
+        <field name="binding_model_id" ref="model_sale_order_pallet"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- PALLET LABEL TEMPLATE (Standard QWeb PDF - Fallback) -->
+    <!-- ============================================================ -->
+    
+    <template id="report_pallet_label">
+        <t t-call="web.basic_layout">
+            <t t-foreach="docs" t-as="pallet">
+                <t t-call="farm_management.report_pallet_label_document"/>
+            </t>
+        </t>
+    </template>
+
+    <!-- ============================================================ -->
+    <!-- STANDALONE TEMPLATE (For wkhtmltoimage rendering) -->
+    <!-- Full HTML document for image-based PDF generation -->
+    <!-- ============================================================ -->
+    
+    <template id="report_pallet_label_standalone">
+        <html dir="rtl" lang="ar">
+            <head>
+                <meta charset="utf-8"/>
+                <style>
+                    /* Black and White Only - Thermal Label Optimized */
+                    * {
+                        box-sizing: border-box;
+                        margin: 0;
+                        padding: 0;
+                    }
+                    
+                    html, body {
+                        height: auto !important;
+                        min-height: 0 !important;
+                    }
+                    
+                    body {
+                        width: 400px;
+                        font-family: 'DejaVu Sans', 'Noto Sans Arabic', system-ui, sans-serif;
+                        direction: rtl;
+                        font-size: 11px;
+                        line-height: 1.4;
+                        background: #fff;
+                        padding: 10px;
+                        color: #000;
+                        -webkit-font-smoothing: antialiased;
+                    }
+                    
+                    .pallet-label {
+                        height: auto;
+                    }
+                    
+                    /* Header */
+                    .label-header {
+                        text-align: center;
+                        padding-bottom: 10px;
+                        margin-bottom: 10px;
+                        border-bottom: 2px solid #000;
+                    }
+                    
+                    .company-logo {
+                        max-height: 40px;
+                        max-width: 140px;
+                        margin-bottom: 4px;
+                    }
+                    
+                    .company-name {
+                        font-size: 14px;
+                        font-weight: 700;
+                        color: #000;
+                    }
+                    
+                    /* Order Info Row */
+                    .order-info {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        gap: 10px;
+                        margin-bottom: 10px;
+                    }
+                    
+                    .order-number {
+                        font-size: 12px;
+                        font-weight: 600;
+                        color: #000;
+                    }
+                    
+                    .order-number span {
+                        color: #333;
+                        font-weight: 400;
+                    }
+                    
+                    .pallet-badge {
+                        display: inline-flex;
+                        align-items: center;
+                        justify-content: center;
+                        background: #000;
+                        color: #fff;
+                        font-size: 16px;
+                        font-weight: 700;
+                        padding: 6px 16px;
+                        border-radius: 4px;
+                        min-width: 70px;
+                    }
+                    
+                    /* Customer Box */
+                    .customer-box {
+                        background: #f5f5f5;
+                        border: 1px solid #000;
+                        padding: 8px 10px;
+                        margin-bottom: 10px;
+                    }
+                    
+                    .customer-label {
+                        font-size: 9px;
+                        color: #333;
+                        margin-bottom: 2px;
+                    }
+                    
+                    .customer-name {
+                        font-size: 12px;
+                        font-weight: 600;
+                        color: #000;
+                    }
+                    
+                    .customer-address {
+                        font-size: 10px;
+                        color: #333;
+                        margin-top: 2px;
+                    }
+                    
+                    /* Product Cards - Compact */
+                    .product-card {
+                        border: 1px solid #000;
+                        margin-bottom: 8px;
+                        overflow: hidden;
+                    }
+                    
+                    .product-header {
+                        background: #000;
+                        color: #fff;
+                        padding: 5px 8px;
+                        font-size: 11px;
+                        font-weight: 600;
+                    }
+                    
+                    .product-details {
+                        display: grid;
+                        grid-template-columns: repeat(3, 1fr);
+                        gap: 4px;
+                        padding: 6px;
+                        background: #fff;
+                    }
+                    
+                    .product-detail-item {
+                        text-align: center;
+                    }
+                    
+                    .product-detail-label {
+                        font-size: 8px;
+                        color: #333;
+                        margin-bottom: 2px;
+                    }
+                    
+                    .product-detail-value {
+                        font-size: 12px;
+                        font-weight: 700;
+                        color: #000;
+                    }
+                    
+                    .barcode-section {
+                        background: #fff;
+                        padding: 6px;
+                        text-align: center;
+                        border-top: 1px dashed #666;
+                    }
+                    
+                    .barcode-img {
+                        max-width: 180px;
+                        height: auto;
+                        display: block;
+                        margin: 0 auto;
+                    }
+                    
+                    /* Totals */
+                    .totals-section {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        gap: 6px;
+                        margin-bottom: 10px;
+                    }
+                    
+                    .total-row {
+                        background: #000;
+                        color: #fff;
+                        padding: 8px;
+                        text-align: center;
+                    }
+                    
+                    .total-label {
+                        font-size: 9px;
+                        opacity: 0.9;
+                        display: block;
+                        margin-bottom: 2px;
+                    }
+                    
+                    .total-value {
+                        font-size: 14px;
+                        font-weight: 700;
+                    }
+                    
+                    /* Footer */
+                    .label-footer {
+                        text-align: center;
+                        font-size: 9px;
+                        color: #333;
+                        padding-top: 8px;
+                        border-top: 1px solid #999;
+                    }
+                    
+                    .cut-line {
+                        margin-top: 10px;
+                        padding-top: 8px;
+                        border-top: 2px dashed #000;
+                        text-align: center;
+                        font-size: 10px;
+                        color: #000;
+                        font-weight: 500;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="pallet-label">
+                    <!-- Header -->
+                    <div class="label-header">
+                        <t t-if="pallet.company_id.logo">
+                            <img class="company-logo" t-att-src="image_data_uri(pallet.company_id.logo)" alt="Logo"/>
+                        </t>
+                        <div class="company-name"><t t-esc="pallet.company_id.name"/></div>
+                    </div>
+
+                    <!-- Order Info -->
+                    <div class="order-info">
+                        <div class="order-number">
+                            <span>طلب رقم:</span> <t t-esc="pallet.order_id.name"/>
+                        </div>
+                        <div class="pallet-badge"><t t-esc="pallet.name"/></div>
+                    </div>
+
+                    <!-- Customer -->
+                    <div class="customer-box">
+                        <div class="customer-label">التسليم إلى:</div>
+                        <div class="customer-name"><t t-esc="pallet.partner_id.name"/></div>
+                        <t t-if="pallet.partner_id.city or pallet.partner_id.country_id">
+                            <div class="customer-address">
+                                <t t-if="pallet.partner_id.city"><t t-esc="pallet.partner_id.city"/></t>
+                                <t t-if="pallet.partner_id.city and pallet.partner_id.country_id">، </t>
+                                <t t-if="pallet.partner_id.country_id"><t t-esc="pallet.partner_id.country_id.name"/></t>
+                            </div>
+                        </t>
+                    </div>
+
+                    <!-- Products -->
+                    <t t-foreach="pallet.line_ids" t-as="line">
+                        <div class="product-card">
+                            <div class="product-header"><t t-esc="line.product_id.name"/></div>
+                            <div class="product-details">
+                                <div class="product-detail-item">
+                                    <div class="product-detail-label">الوزن (كجم)</div>
+                                    <div class="product-detail-value"><t t-esc="'%.1f' % line.box_weight_kg"/></div>
+                                </div>
+                                <div class="product-detail-item">
+                                    <div class="product-detail-label">العدد</div>
+                                    <div class="product-detail-value">×<t t-esc="line.box_quantity"/></div>
+                                </div>
+                                <div class="product-detail-item">
+                                    <div class="product-detail-label">الإجمالي</div>
+                                    <div class="product-detail-value"><t t-esc="'%.1f' % line.subtotal_kg"/> كجم</div>
+                                </div>
+                            </div>
+                            <t t-set="barcode_img" t-value="line.get_barcode_image()"/>
+                            <t t-if="barcode_img">
+                                <div class="barcode-section">
+                                    <img class="barcode-img" t-att-src="barcode_img" alt="Barcode"/>
+                                </div>
+                            </t>
+                        </div>
+                    </t>
+
+                    <!-- Totals -->
+                    <div class="totals-section">
+                        <div class="total-row">
+                            <span class="total-label">إجمالي الصناديق</span>
+                            <span class="total-value"><t t-esc="pallet.total_boxes"/></span>
+                        </div>
+                        <div class="total-row">
+                            <span class="total-label">إجمالي الوزن</span>
+                            <span class="total-value"><t t-esc="'%.1f' % pallet.total_kg"/> كجم</span>
+                        </div>
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="label-footer">
+                        تاريخ الطباعة: <t t-esc="datetime.datetime.now().strftime('%Y-%m-%d %H:%M')"/>
+                    </div>
+                    
+                    <div class="cut-line">✂ ─ ─ ─ ─ ─ ─ قص هنا ─ ─ ─ ─ ─ ─ ✂</div>
+                </div>
+            </body>
+        </html>
+    </template>
+
+    <!-- ============================================================ -->
+    <!-- ORIGINAL DOCUMENT TEMPLATE (Used by both approaches) -->
+    <!-- ============================================================ -->
+    
+    <template id="report_pallet_label_document">
+        <div class="pallet-wrapper" dir="rtl">
+            <style>
+                /* Black and White - Thermal printer optimized */
+                @media print {
+                    @page {
+                        size: 100mm auto;
+                        margin: 2mm;
+                    }
+                }
+                
+                .pallet-wrapper {
+                    width: 96mm;
+                    font-family: 'DejaVu Sans', 'Noto Sans Arabic', Arial, sans-serif;
+                    direction: rtl;
+                    text-align: right;
+                    font-size: 9pt;
+                    padding: 2mm;
+                    page-break-after: always;
+                    color: #000;
+                }
+                
+                .pallet-label {
+                    width: 100%;
+                }
+                
+                .barcode-img {
+                    max-width: 50mm;
+                    height: auto;
+                    display: block;
+                    margin: 0 auto;
+                    image-rendering: -webkit-optimize-contrast;
+                }
+                
+                .label-header {
+                    text-align: center;
+                    margin-bottom: 3mm;
+                    border-bottom: 0.4mm solid #000;
+                    padding-bottom: 2mm;
+                }
+                
+                .label-header img.company-logo {
+                    max-height: 12mm;
+                    max-width: 40mm;
+                    image-rendering: -webkit-optimize-contrast;
+                }
+                
+                .company-name {
+                    font-size: 11pt;
+                    font-weight: bold;
+                    margin-top: 1mm;
+                    color: #000;
+                }
+                
+                .order-info {
+                    display: table;
+                    width: 100%;
+                    margin-bottom: 3mm;
+                    padding: 1mm 0;
+                }
+                
+                .order-number {
+                    display: table-cell;
+                    vertical-align: middle;
+                    font-size: 10pt;
+                    font-weight: 700;
+                    text-align: right;
+                    color: #000;
+                }
+                
+                .pallet-badge {
+                    display: table-cell;
+                    vertical-align: middle;
+                    text-align: left;
+                    width: 22mm;
+                }
+                
+                .pallet-badge-inner {
+                    display: inline-block;
+                    font-size: 12pt;
+                    background: #000;
+                    color: #fff;
+                    padding: 2mm 3mm;
+                    font-weight: bold;
+                    text-align: center;
+                    min-width: 18mm;
+                }
+                
+                .customer-box {
+                    margin-bottom: 3mm;
+                    padding: 2mm;
+                    background: #f0f0f0;
+                    border: 1px solid #000;
+                    clear: both;
+                }
+                
+                .customer-label {
+                    font-size: 8pt;
+                    color: #333;
+                }
+                
+                .customer-name {
+                    font-size: 10pt;
+                    font-weight: bold;
+                    color: #000;
+                }
+                
+                .customer-address {
+                    font-size: 8pt;
+                    color: #333;
+                }
+                
+                /* Compact Product cards */
+                .product-card {
+                    border: 1px solid #000;
+                    margin-bottom: 2mm;
+                    padding: 1.5mm;
+                    overflow: visible;
+                }
+                
+                .product-header {
+                    background: #000;
+                    color: #fff;
+                    padding: 1.5mm;
+                    margin: -1.5mm -1.5mm 1.5mm -1.5mm;
+                    font-weight: bold;
+                    font-size: 9pt;
+                }
+                
+                .product-details {
+                    display: table;
+                    width: 100%;
+                    margin-bottom: 1.5mm;
+                }
+                
+                .product-detail-item {
+                    display: table-cell;
+                    text-align: center;
+                    padding: 0.5mm;
+                }
+                
+                .product-detail-label {
+                    font-size: 7pt;
+                    color: #333;
+                }
+                
+                .product-detail-value {
+                    font-size: 9pt;
+                    font-weight: bold;
+                    color: #000;
+                }
+                
+                .barcode-section {
+                    text-align: center;
+                    padding: 1.5mm 0;
+                    border-top: 1px dashed #666;
+                    margin-top: 1.5mm;
+                    overflow: visible;
+                }
+                
+                .totals-section {
+                    margin-bottom: 3mm;
+                }
+                
+                .total-row {
+                    background: #000;
+                    color: #fff;
+                    padding: 2mm;
+                    margin-bottom: 1.5mm;
+                    font-size: 10pt;
+                    text-align: center;
+                }
+                
+                .total-label {
+                    font-size: 8pt;
+                }
+                
+                .total-value {
+                    font-size: 11pt;
+                    font-weight: bold;
+                }
+                
+                .label-footer {
+                    text-align: center;
+                    font-size: 7pt;
+                    color: #333;
+                    border-top: 1px solid #999;
+                    padding-top: 1.5mm;
+                }
+                
+                .cut-line {
+                    margin-top: 3mm;
+                    padding-top: 2mm;
+                    border-top: 2px dashed #000;
+                    text-align: center;
+                    font-size: 8pt;
+                    color: #000;
+                }
+            </style>
+            
+            <div class="pallet-label">
+                <!-- Company Logo and Header -->
+                <div class="label-header">
+                    <t t-if="pallet.company_id.logo">
+                        <img class="company-logo" t-att-src="image_data_uri(pallet.company_id.logo)" alt="Logo"/>
+                    </t>
+                    <div class="company-name">
+                        <t t-esc="pallet.company_id.name"/>
+                    </div>
+                </div>
+
+                <!-- SO Number and Pallet Number Row -->
+                <div class="order-info">
+                    <div class="order-number">
+                        <strong>طلب رقم:</strong> <span t-field="pallet.order_id.name"/>
+                    </div>
+                    <div class="pallet-badge">
+                        <t t-esc="pallet.name"/>
+                    </div>
+                </div>
+
+                <!-- Customer Info -->
+                <div class="customer-box">
+                    <div class="customer-label">التسليم إلى:</div>
+                    <div class="customer-name">
+                        <t t-esc="pallet.partner_id.name"/>
+                    </div>
+                    <t t-if="pallet.partner_id.city or pallet.partner_id.country_id">
+                        <div class="customer-address">
+                            <t t-if="pallet.partner_id.city"><t t-esc="pallet.partner_id.city"/></t>
+                            <t t-if="pallet.partner_id.city and pallet.partner_id.country_id">، </t>
+                            <t t-if="pallet.partner_id.country_id"><t t-esc="pallet.partner_id.country_id.name"/></t>
+                        </div>
+                    </t>
+                </div>
+
+                <!-- Product Cards -->
+                <t t-foreach="pallet.line_ids" t-as="line">
+                    <div class="product-card">
+                        <!-- Product Name Header -->
+                        <div class="product-header">
+                            <t t-esc="line.product_id.name"/>
+                        </div>
+                        
+                        <!-- Weight and Quantity -->
+                        <div class="product-details">
+                            <div class="product-detail-item">
+                                <div class="product-detail-label">الوزن (كجم)</div>
+                                <div class="product-detail-value"><t t-esc="'%.1f' % line.box_weight_kg"/></div>
+                            </div>
+                            <div class="product-detail-item">
+                                <div class="product-detail-label">العدد</div>
+                                <div class="product-detail-value">×<t t-esc="line.box_quantity"/></div>
+                            </div>
+                            <div class="product-detail-item">
+                                <div class="product-detail-label">الإجمالي</div>
+                                <div class="product-detail-value"><t t-esc="'%.1f' % line.subtotal_kg"/> كجم</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Barcode Section -->
+                        <t t-set="barcode_img" t-value="line.get_barcode_image()"/>
+                        <t t-if="barcode_img">
+                            <div class="barcode-section">
+                                <img class="barcode-img" t-att-src="barcode_img" alt="Barcode"/>
+                            </div>
+                        </t>
+                    </div>
+                </t>
+
+                <!-- Totals - Each in own row -->
+                <div class="totals-section">
+                    <div class="total-row">
+                        <span class="total-label">إجمالي الصناديق: </span>
+                        <span class="total-value"><t t-esc="pallet.total_boxes"/></span>
+                    </div>
+                    <div class="total-row">
+                        <span class="total-label">إجمالي الوزن: </span>
+                        <span class="total-value"><t t-esc="'%.1f' % pallet.total_kg"/> كجم</span>
+                    </div>
+                </div>
+
+                <!-- Footer with date -->
+                <div class="label-footer">
+                    تاريخ الطباعة: <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d %H:%M')"/>
+                </div>
+                
+                <!-- Cut line for roll printer -->
+                <div class="cut-line">
+                    ✂ ─ ─ ─ ─ ─ ─ ─ ─ ─ قص هنا ─ ─ ─ ─ ─ ─ ─ ─ ─ ✂
+                </div>
+            </div>
+        </div>
+    </template>
+
+</odoo>
