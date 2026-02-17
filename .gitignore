@@ -1,8 +1,12 @@
-# Track only custom_addons and config
+# Track only custom_addons, config, and Docker files
 /*
 !/custom_addons/
 !/.gitignore
 !/odoo.conf
+!/odoo_prod.conf
+!/docker-compose.yml
+!/Dockerfile
+!/requirements-extra.txt
 
 # Python
 __pycache__/

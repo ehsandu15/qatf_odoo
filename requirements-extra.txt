@@ -1,0 +1,4 @@
+# Extra dependencies for farm_management pallet label printing
+playwright>=1.40.0
+# reportlab and Pillow are already in requirements.txt with version markers per Python version
+# setuptools is already included in Python 3.11
